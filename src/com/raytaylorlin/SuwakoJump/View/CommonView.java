@@ -45,7 +45,7 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
     /*
     * 更新逻辑，需要在子类中覆写
     */
-    public void update(){}
+    public abstract void update();
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }

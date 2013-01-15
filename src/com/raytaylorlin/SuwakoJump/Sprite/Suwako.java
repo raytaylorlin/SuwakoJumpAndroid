@@ -26,6 +26,7 @@ public class Suwako extends JSprite {
 
     public Suwako(Bitmap image, Point drawPosition, Point imageSize) {
         super(image, drawPosition, imageSize);
+        this.sheetSize=new Point(20,2);
     }
 
     @Override

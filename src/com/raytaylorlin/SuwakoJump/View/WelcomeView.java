@@ -95,9 +95,6 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
 
 
     public void onDraw(Canvas canvas) {
-        //画的内容是z轴的，后画的会覆盖前面画的
-//        canvas.drawColor(Color.WHITE);//背景色
-//if(status == 4){//菜单状态
         canvas.drawBitmap(this.bmpBackground, 0, 0, mainPaint);
         this.btnStartGame.draw(canvas, mainPaint);
     }
@@ -138,5 +135,9 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
 //            }
         }
         return super.onTouchEvent(event);//调用基类的方法
+    }
+
+    @Override
+    public void update() {
     }
 }

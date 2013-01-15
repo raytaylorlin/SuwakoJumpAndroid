@@ -8,9 +8,9 @@ public class TutorialThread extends Thread {
     //睡眠的毫秒数
     private int sleepSpan = 100;
     //
-    private SurfaceHolder surfaceHolder;
+    protected SurfaceHolder surfaceHolder;
     //调用界面的引用
-    private CommonView calledView;
+    protected CommonView calledView;
     //线程是否正在运行
     private boolean isRunning = false;
 
@@ -52,7 +52,8 @@ public class TutorialThread extends Thread {
     /*
      * 线程其它处理操作，供覆写
      */
-    protected void threadHandle() {
+    protected void threadHandle(){
+        this.calledView.update();
     }
 
 }
