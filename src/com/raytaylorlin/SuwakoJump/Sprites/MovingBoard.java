@@ -16,7 +16,7 @@ public class MovingBoard extends Board {
     private int velocity = 3;
 
     public MovingBoard(Bitmap image, Point drawPosition, boolean isVerticalMoving) {
-        super(image, drawPosition, BOARD_FRAME_SIZE, new Point(1, 1), new Point(400, 30));
+        super(image, drawPosition, BOARD_TYPE_MOVING);
 //        this.drawPosition.x = this.currentMovingLocation = RandomHelper.getRandom(MOVE_RANGE);
         this.isVerticalMoving = isVerticalMoving;
     }

@@ -34,4 +34,8 @@ public class JSprite {
                 this.drawPosition.x+this.imageSize.x,
                 this.drawPosition.y+this.imageSize.y);
     }
+
+    public boolean isToDisposed(){
+        return this.toDisposed;
+    }
 }

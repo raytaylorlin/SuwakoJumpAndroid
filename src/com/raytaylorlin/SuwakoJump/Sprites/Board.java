@@ -5,16 +5,19 @@ import com.raytaylorlin.SuwakoJump.Lib.JSprite;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 public class Board extends JSprite {
+    protected static final int BOARD_TYPE_NORMAL = 0;
+    protected static final int BOARD_TYPE_BROKEN = 1;
+    protected static final int BOARD_TYPE_MOVING = 2;
+    protected static final int BOARD_TYPE_VANISH = 3;
     protected static final int UP_MOVING_V = 20;
-    protected static final Point BOARD_FRAME_SIZE = new Point(80, 15);
 
     public boolean isDownMoving, isUpMoving;
     protected int fallingCount, fallingDuration;
     protected int fallingTotalCount = 1;
 
-    public Board(Bitmap image, Point drawPosition, Point imageSize, Point sheetSize, Point cutPosition) {
+    public Board(Bitmap image, Point drawPosition, int boardType) {
         super(image, drawPosition, new Point(image.getWidth(), image.getWidth() / 4),
-                sheetSize, cutPosition);
+                new Point(1, 1), new Point(0, image.getWidth() / 4 * boardType));
     }
 
     public void draw(Canvas canvas, Paint paint) {
@@ -53,7 +56,7 @@ public class Board extends JSprite {
         this.isDownMoving = true;
         this.fallingCount = 0;
         this.fallingDuration = duration;
-        this.fallingTotalCount = fallingTime * 2;
+        this.fallingTotalCount = fallingTime * 3;
     }
 
     public Point getPosition() {

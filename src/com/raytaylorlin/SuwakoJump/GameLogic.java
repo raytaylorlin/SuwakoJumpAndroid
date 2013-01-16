@@ -150,28 +150,25 @@ public class GameLogic {
 
     private void add(JSprite sprite) {
         this.spritesList.add(sprite);
-//        this.canvasPanel.add(sprite);
     }
 
     private void flushSpriteList() {
         Iterator<JSprite> it = this.spritesList.iterator();
-//        while (it.hasNext()) {
-//            JSprite sprite = it.next();
-//            if (sprite.toDisposed) {
-//                it.remove();
-////                sprite = null;
-//                if (sprite != null) {
-//                    if (this.spritesList.contains(sprite)) {
-//                        this.spritesList.remove(sprite);
-//                    }
-//                    if (this.boardsList.contains(sprite)) {
-//                        this.boardsList.remove(sprite);
-//                    }
-//                    this.canvasPanel.remove(sprite);
-//                }
-//            }
-//        }
-
+        while (it.hasNext()) {
+            JSprite sprite = it.next();
+            if (sprite.isToDisposed()) {
+                it.remove();
+//                sprite = null;
+                if (sprite != null) {
+                    if (this.spritesList.contains(sprite)) {
+                        this.spritesList.remove(sprite);
+                    }
+                    if (this.boardsList.contains(sprite)) {
+                        this.boardsList.remove(sprite);
+                    }
+                }
+            }
+        }
     }
 
     private Board getNewTypeBoard(int y) {
@@ -182,16 +179,20 @@ public class GameLogic {
         float boardTypeFloat = RandomHelper.getRandom();
         newBoard = new NormalBoard(this.bmpHashMap.get("board"),
                 new Point(boardX, boardY));
-//        if (boardTypeFloat < 0.1) {
-//            newBoard = new VanishBoard(this.mainActivity, fieldImage, new Point(boardX, boardY));
-//        } else if (boardTypeFloat < 0.3) {
-//            newBoard = new BrokenBoard(this.mainActivity, fieldImage, new Point(boardX, boardY));
-//        } else if (boardTypeFloat < 0.5) {
-//            boolean isVertical = RandomHelper.getRandom() < 0.5;
-//            newBoard = new MovingBoard(this.mainActivity, fieldImage, new Point(boardX, boardY), isVertical);
-//        } else {
-//            newBoard = new NormalBoard(this.mainActivity, fieldImage, new Point(boardX, boardY));
-//        }
+        if (boardTypeFloat < 0.1) {
+            newBoard = new VanishBoard(this.bmpHashMap.get("board"),
+                    new Point(boardX, boardY));
+        } else if (boardTypeFloat < 0.3) {
+            newBoard = new BrokenBoard(this.bmpHashMap.get("board"),
+                    new Point(boardX, boardY));
+        } else if (boardTypeFloat < 0.5) {
+            boolean isVertical = RandomHelper.getRandom() < 0.5;
+            newBoard = new MovingBoard(this.bmpHashMap.get("board"),
+                    new Point(boardX, boardY), isVertical);
+        } else {
+            newBoard = new NormalBoard(this.bmpHashMap.get("board"),
+                    new Point(boardX, boardY));
+        }
         return newBoard;
     }
 

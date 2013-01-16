@@ -101,11 +101,13 @@ public class Suwako extends JSprite {
                 && this.drawPosition.x + this.imageSize.x / 2 + 15 >= boardPos.x
                 && this.drawPosition.x + this.imageSize.x / 2 - 15 <= boardPos.x + boardSize.x) {
             //获取碰撞的板子类型
-            String boardType = board.getClass().getName();
-            if (boardType == "SuwakoJump.Sprites.BrokenBoard") {
+            String fullType = board.getClass().getName();
+
+//            String boardType = (fullType.substring(fullType.lastIndexOf(".") + 1)).toString();
+            if (fullType.contains("BrokenBoard")) {
                 ((BrokenBoard) board).setBroken();
                 return false;
-            } else if (boardType == "SuwakoJump.Sprites.VanishBoard") {
+            } else if (fullType.contains("VanishBoard")) {
                 ((VanishBoard) board).vanish();
             }
             this.currentFrameX = 0;

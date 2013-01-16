@@ -9,7 +9,7 @@ public class BrokenBoard extends Board {
     private int actionCount;
 
     public BrokenBoard(Bitmap image, Point drawPosition) {
-        super(image, drawPosition, BOARD_FRAME_SIZE, new Point(1, 1), new Point(400, 15));
+        super(image, drawPosition, BOARD_TYPE_BROKEN);
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.graphics.Point;
 
 public class VanishBoard extends Board {
     public VanishBoard(Bitmap image, Point drawPosition) {
-        super(image, drawPosition, BOARD_FRAME_SIZE, new Point(1, 1), new Point(400, 45));
+        super(image, drawPosition, BOARD_TYPE_VANISH);
     }
 
     @Override
