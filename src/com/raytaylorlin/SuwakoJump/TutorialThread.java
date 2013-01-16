@@ -6,7 +6,7 @@ import com.raytaylorlin.SuwakoJump.View.CommonView;
 
 public class TutorialThread extends Thread {
     //睡眠的毫秒数
-    private int sleepSpan = 100;
+    private int sleepSpan = 1000/SuwakoJumpActivity.GAME_FRAME_RATE;
     //
     protected SurfaceHolder surfaceHolder;
     //调用界面的引用

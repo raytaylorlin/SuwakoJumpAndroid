@@ -38,6 +38,7 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
 
     public WelcomeView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
+        this.viewIndex = SuwakoJumpActivity.WELCOME_VIEW_INDEX;
 //        this.welcomeThread = new WelcomeViewThread(this);
 //        initSounds();//初始化声音
 

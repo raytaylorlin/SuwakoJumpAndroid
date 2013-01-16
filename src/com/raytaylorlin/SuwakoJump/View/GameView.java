@@ -2,11 +2,8 @@ package com.raytaylorlin.SuwakoJump.View;
 
 import android.graphics.*;
 import android.view.SurfaceHolder;
-import com.raytaylorlin.SuwakoJump.GameViewThread;
-import com.raytaylorlin.SuwakoJump.R;
+import com.raytaylorlin.SuwakoJump.*;
 import com.raytaylorlin.SuwakoJump.Sprite.Suwako;
-import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
-import com.raytaylorlin.SuwakoJump.TutorialThread;
 
 public class GameView extends CommonView implements SurfaceHolder.Callback {
     private TutorialThread gameThread;
@@ -16,11 +13,14 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     private Bitmap bmpSuwako;
 
     private Suwako suwako;
+    private GameLogic gameLogic;
 
     public GameView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
-        this.gameThread = new GameViewThread(getHolder(),this);
+        this.gameLogic = new GameLogic(this.suwako);
+        this.gameThread = new GameViewThread(getHolder(), this);
         this.gameThread.start();
+        this.viewIndex = SuwakoJumpActivity.GAME_VIEW_INDEX;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
 
     @Override
     public void update() {
-        this.suwako.update();
+        this.gameLogic.update();
     }
 
 }

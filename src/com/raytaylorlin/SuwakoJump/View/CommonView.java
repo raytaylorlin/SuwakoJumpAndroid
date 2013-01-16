@@ -14,6 +14,7 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
     protected TutorialThread tutorialThread;
     //主画笔
     protected Paint mainPaint;
+    protected int viewIndex;
 
     public CommonView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
@@ -73,5 +74,9 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
             } catch (InterruptedException e) {
             }
         }
+    }
+
+    public int getViewIndex(){
+        return this.viewIndex;
     }
 }

@@ -9,6 +9,9 @@ import android.util.DisplayMetrics;
 import android.view.*;
 import com.raytaylorlin.SuwakoJump.View.*;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class SuwakoJumpActivity extends Activity {
     //    CommonView gameView;//GameView的引用
 
@@ -17,6 +20,9 @@ public class SuwakoJumpActivity extends Activity {
 //    WinView winView;//欢迎界面的引用
     private CommonView currentView;
     private CommonView loadingView, welcomeView, gameView;
+
+    private Timer timer;
+    private GameTimeTask gameTimeTask;
     //进度条界面的引用
 //    private LoadingView loadingView;
 //    private WelcomeView welcomeView;
@@ -25,9 +31,14 @@ public class SuwakoJumpActivity extends Activity {
     boolean isSound = true;//是否播放声音
     public static final int MSG_REFRESH = 0x000001;
     public static final int MSG_CHANGE_TO_GAMEVIEW = 0x000002;
+    public static final int GAME_FRAME_RATE = 30;
+
+    public static final int WELCOME_VIEW_INDEX = 0;
+    public static final int GAME_VIEW_INDEX = 1;
 
     public static int DISPLAY_WIDTH, DISPLAY_HEIGHT;
     public static double X_SCALE_FACTOR, Y_SCALE_FACTOR;
+    public int CURRENT_VIEW_INDEX = WELCOME_VIEW_INDEX;
 
     /*
     * 处理消息
@@ -37,7 +48,7 @@ public class SuwakoJumpActivity extends Activity {
             SuwakoJumpActivity _this = SuwakoJumpActivity.this;
             switch (msg.what) {
                 case SuwakoJumpActivity.MSG_REFRESH:
-                    _this.currentView.update();
+//                    _this.currentView.update();
                     break;
                 case SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW:
                     gameView = new GameView(_this);
@@ -68,6 +79,10 @@ public class SuwakoJumpActivity extends Activity {
         DISPLAY_HEIGHT = dm.heightPixels;
         X_SCALE_FACTOR = DISPLAY_WIDTH / 480.0;
         Y_SCALE_FACTOR = DISPLAY_HEIGHT / 800.0;
+
+//        this.timer = new Timer();
+//        this.gameTimeTask = new GameTimeTask(this.gameLogic, this.myHandler);
+//        this.timer.schedule(this.gameTimeTask, 0, 1000 / GAME_FRAME_RATE);
 
         this.loadingView = new LoadingView(this, 1);
         this.welcomeView = new WelcomeView(this);
@@ -102,6 +117,7 @@ public class SuwakoJumpActivity extends Activity {
     public void changeView(CommonView targetView) {
         this.setContentView(targetView);
         this.currentView = targetView;
+        this.CURRENT_VIEW_INDEX = targetView.getViewIndex();
     }
 
 
