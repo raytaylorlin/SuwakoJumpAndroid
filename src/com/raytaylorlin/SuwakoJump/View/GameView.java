@@ -17,7 +17,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
 
     public GameView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
-        this.gameLogic = new GameLogic(this.suwako);
+        this.gameLogic = new GameLogic(this, this.suwako);
         this.gameThread = new GameViewThread(getHolder(), this);
         this.gameThread.start();
         this.viewIndex = SuwakoJumpActivity.GAME_VIEW_INDEX;
@@ -39,7 +39,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     @Override
     protected void initSprite() {
         int suwakoX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5);
-        int suwakoY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.7);
+        int suwakoY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.1);
         int suwakoW = this.bmpSuwako.getWidth() / 20;
         int suwakoH = this.bmpSuwako.getHeight() / 2;
 
@@ -58,4 +58,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.gameLogic.update();
     }
 
+    public float getSensorX(){
+        return this.mainActivity.getSensorX();
+    }
 }

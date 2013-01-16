@@ -5,12 +5,13 @@ package com.raytaylorlin.SuwakoJump;
 
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
 import com.raytaylorlin.SuwakoJump.Sprite.Suwako;
+import com.raytaylorlin.SuwakoJump.View.GameView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class GameLogic {
-    private SuwakoJumpActivity mainActivity;
+    private GameView gameView;
 //    private CanvasPanel canvasPanel;
 
     private ArrayList<JSprite> spritesList = new ArrayList<JSprite>();
@@ -24,7 +25,8 @@ public class GameLogic {
     private boolean isGameOver = false;
     private boolean boardsFallingDown = false;
 
-    public GameLogic(Suwako suwako) {
+    public GameLogic(GameView gameView, Suwako suwako) {
+        this.gameView = gameView;
         this.suwako = suwako;
         this.init();
     }
@@ -60,6 +62,8 @@ public class GameLogic {
 //            this.countScore.update();
             //更新主角逻辑
             this.suwako.update();
+            float x = this.gameView.getSensorX();
+            this.suwako.setSensorX(x);
             if (this.suwako.isDead) {
                 this.notifyGameOver();
             }

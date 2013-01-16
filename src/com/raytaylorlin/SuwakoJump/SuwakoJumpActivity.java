@@ -1,6 +1,10 @@
 package com.raytaylorlin.SuwakoJump;
 
 import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,7 +14,6 @@ import android.view.*;
 import com.raytaylorlin.SuwakoJump.View.*;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class SuwakoJumpActivity extends Activity {
     //    CommonView gameView;//GameView的引用
@@ -23,10 +26,10 @@ public class SuwakoJumpActivity extends Activity {
 
     private Timer timer;
     private GameTimeTask gameTimeTask;
-    //进度条界面的引用
-//    private LoadingView loadingView;
-//    private WelcomeView welcomeView;
-//    private GameView gameView;
+
+    //重力加速度感应管理器
+    private SensorManager sensorManager;
+    private float sensorX;
 
     boolean isSound = true;//是否播放声音
     public static final int MSG_REFRESH = 0x000001;
@@ -80,9 +83,21 @@ public class SuwakoJumpActivity extends Activity {
         X_SCALE_FACTOR = DISPLAY_WIDTH / 480.0;
         Y_SCALE_FACTOR = DISPLAY_HEIGHT / 800.0;
 
-//        this.timer = new Timer();
-//        this.gameTimeTask = new GameTimeTask(this.gameLogic, this.myHandler);
-//        this.timer.schedule(this.gameTimeTask, 0, 1000 / GAME_FRAME_RATE);
+        this.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor sensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        SensorEventListener listener = new SensorEventListener() {
+            public void onSensorChanged(SensorEvent e) {
+                float x = e.values[SensorManager.DATA_X];
+                SuwakoJumpActivity.this.setSensorX(x);
+//                y = e.values[SensorManager.DATA_Y];
+//                z = e.values[SensorManager.DATA_Z];
+            }
+
+            public void onAccuracyChanged(Sensor s, int accuracy) {
+            }
+        };
+        //注册listener，第三个参数是检测的精确度
+        sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_GAME);
 
         this.loadingView = new LoadingView(this, 1);
         this.welcomeView = new WelcomeView(this);
@@ -96,7 +111,6 @@ public class SuwakoJumpActivity extends Activity {
             }
         }.start();//启动线程
     }
-
 
     public boolean onTouchEvent(MotionEvent event) {
         return true;
@@ -118,6 +132,14 @@ public class SuwakoJumpActivity extends Activity {
         this.setContentView(targetView);
         this.currentView = targetView;
         this.CURRENT_VIEW_INDEX = targetView.getViewIndex();
+    }
+
+    public void setSensorX(float sensorX) {
+        this.sensorX = sensorX;
+    }
+
+    public float getSensorX() {
+        return this.sensorX;
     }
 
 

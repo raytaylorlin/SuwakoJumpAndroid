@@ -20,13 +20,14 @@ public class Suwako extends JSprite {
     public int currentFrameX = 0;
     public boolean isDead;
 
+    private int moveStepX = 0;
     private boolean isUp;
     private int frameYBuffer = 0;
     private int fallCount = 1;
 
     public Suwako(Bitmap image, Point drawPosition, Point imageSize) {
         super(image, drawPosition, imageSize);
-        this.sheetSize=new Point(20,2);
+        this.sheetSize = new Point(20, 2);
     }
 
     @Override
@@ -77,14 +78,17 @@ public class Suwako extends JSprite {
         if (this.drawPosition.y > gameH + gameSB) {
             this.isDead = true;
         }
-        //判断左右按键
-//        if (CanvasPanel.LeftKeyPressed) {
-//            this.drawPosition.x -= MOVE_STEP_X;
-//            this.cutPosition.y = this.imageSize.y;
-//        } else if (CanvasPanel.RightKeyPressed) {
-//            this.drawPosition.x += MOVE_STEP_X;
-//            this.cutPosition.y = 0;
-//        }
+        //判断左右倾斜（重力感应器）
+        if (this.moveStepX >= 0) {
+            this.cutPosition.y = this.imageSize.y;
+        } else {
+            this.cutPosition.y = 0;
+        }
+        this.drawPosition.x += this.moveStepX;
+    }
+
+    public void setSensorX(float sensorX) {
+        this.moveStepX = ((int) sensorX) * 2;
     }
 
 //    public boolean checkLanding(Board board) {
