@@ -9,9 +9,9 @@ import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 //import SuwakoJump.Lib.SoundHelper;
 
 public class Suwako extends JSprite {
-    private final int FIRST_V = 10;
+    private final int FIRST_V = 20;
     private final int MOVE_STEP_X = 10;
-    private final int MOVE_STEP_Y = 3;
+    private final int MOVE_STEP_Y = 4;
     private final int FRAME_Y_BUFFER = 2;
 
 //    private SoundEffect seJump=new SoundEffect("sound/jump.wav");
@@ -80,15 +80,15 @@ public class Suwako extends JSprite {
         }
         //判断左右倾斜（重力感应器）
         if (this.moveStepX <= 0) {
-            this.cutPosition.y = 0;
-        } else {
             this.cutPosition.y = this.imageSize.y;
+        } else {
+            this.cutPosition.y = 0;
         }
         this.drawPosition.x += this.moveStepX;
     }
 
     public void setSensorX(float sensorX) {
-        this.moveStepX = -((int) sensorX) * 2;
+        this.moveStepX = -((int) sensorX) * 6;
     }
 
     public boolean checkLanding(Board board) {

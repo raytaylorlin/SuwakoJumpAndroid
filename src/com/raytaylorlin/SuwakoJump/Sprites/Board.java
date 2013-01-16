@@ -13,7 +13,8 @@ public class Board extends JSprite {
     protected int fallingTotalCount = 1;
 
     public Board(Bitmap image, Point drawPosition, Point imageSize, Point sheetSize, Point cutPosition) {
-        super(image, drawPosition, imageSize, sheetSize, cutPosition);
+        super(image, drawPosition, new Point(image.getWidth(), image.getWidth() / 4),
+                sheetSize, cutPosition);
     }
 
     public void draw(Canvas canvas, Paint paint) {
@@ -55,11 +56,11 @@ public class Board extends JSprite {
         this.fallingTotalCount = fallingTime * 2;
     }
 
-    public Point getPosition(){
+    public Point getPosition() {
         return this.drawPosition;
     }
 
-    public Point getSize(){
+    public Point getSize() {
         return this.imageSize;
     }
 }
