@@ -1,4 +1,4 @@
-package com.raytaylorlin.SuwakoJump.Sprite;
+package com.raytaylorlin.SuwakoJump.Sprites;
 
 import android.graphics.*;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
@@ -79,43 +79,45 @@ public class Suwako extends JSprite {
             this.isDead = true;
         }
         //判断左右倾斜（重力感应器）
-        if (this.moveStepX >= 0) {
-            this.cutPosition.y = this.imageSize.y;
-        } else {
+        if (this.moveStepX <= 0) {
             this.cutPosition.y = 0;
+        } else {
+            this.cutPosition.y = this.imageSize.y;
         }
         this.drawPosition.x += this.moveStepX;
     }
 
     public void setSensorX(float sensorX) {
-        this.moveStepX = ((int) sensorX) * 2;
+        this.moveStepX = -((int) sensorX) * 2;
     }
 
-//    public boolean checkLanding(Board board) {
-//        //下降过程中做与板子的碰撞检测
-//        if (!this.isUp
-//                && this.drawPosition.y + this.imageSize.y - 34 >= board.drawPosition.y - board.imageSize.y
-//                && this.drawPosition.y + this.imageSize.y - 34 <= board.drawPosition.y + board.imageSize.y * 1.5
-//                && this.drawPosition.x + this.imageSize.x / 2 + 15 >= board.drawPosition.x
-//                && this.drawPosition.x + this.imageSize.x / 2 - 15 <= board.drawPosition.x + board.imageSize.x) {
-//            //获取碰撞的板子类型
-//            String boardType = board.getClass().getName();
-//            if (boardType == "SuwakoJump.Sprites.BrokenBoard") {
-//                ((BrokenBoard) board).setBroken();
-//                return false;
-//            } else if (boardType == "SuwakoJump.Sprites.VanishBoard") {
-//                ((VanishBoard) board).vanish();
-//            }
-//            this.currentFrameX = 0;
-//            this.fallCount = 1;
-//            this.isUp = true;
-//            this.drawPosition.y = board.drawPosition.y - this.imageSize.y;
+    public boolean checkLanding(Board board) {
+        //下降过程中做与板子的碰撞检测
+        Point boardPos = board.getPosition();
+        Point boardSize = board.getSize();
+        if (!this.isUp
+                && this.drawPosition.y + this.imageSize.y - 34 >= boardPos.y - boardSize.y
+                && this.drawPosition.y + this.imageSize.y - 34 <= boardPos.y + boardSize.y * 1.5
+                && this.drawPosition.x + this.imageSize.x / 2 + 15 >= boardPos.x
+                && this.drawPosition.x + this.imageSize.x / 2 - 15 <= boardPos.x + boardSize.x) {
+            //获取碰撞的板子类型
+            String boardType = board.getClass().getName();
+            if (boardType == "SuwakoJump.Sprites.BrokenBoard") {
+                ((BrokenBoard) board).setBroken();
+                return false;
+            } else if (boardType == "SuwakoJump.Sprites.VanishBoard") {
+                ((VanishBoard) board).vanish();
+            }
+            this.currentFrameX = 0;
+            this.fallCount = 1;
+            this.isUp = true;
+            this.drawPosition.y = boardPos.y - this.imageSize.y;
 //            SoundHelper.play(this.seJump);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public int getDuration() {
         int gameH = SuwakoJumpActivity.DISPLAY_HEIGHT;

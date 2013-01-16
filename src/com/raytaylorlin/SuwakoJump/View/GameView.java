@@ -3,7 +3,11 @@ package com.raytaylorlin.SuwakoJump.View;
 import android.graphics.*;
 import android.view.SurfaceHolder;
 import com.raytaylorlin.SuwakoJump.*;
-import com.raytaylorlin.SuwakoJump.Sprite.Suwako;
+import com.raytaylorlin.SuwakoJump.Lib.JSprite;
+import com.raytaylorlin.SuwakoJump.Sprites.Suwako;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameView extends CommonView implements SurfaceHolder.Callback {
     private TutorialThread gameThread;
@@ -11,13 +15,14 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     //背景图片
     private Bitmap bmpBackground;
     private Bitmap bmpSuwako;
+    private Bitmap bmpBoard;
+    private HashMap<String, Bitmap> bmpHashMap;
 
-    private Suwako suwako;
     private GameLogic gameLogic;
 
     public GameView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
-        this.gameLogic = new GameLogic(this, this.suwako);
+        this.gameLogic = new GameLogic(this, this.bmpHashMap);
         this.gameThread = new GameViewThread(getHolder(), this);
         this.gameThread.start();
         this.viewIndex = SuwakoJumpActivity.GAME_VIEW_INDEX;
@@ -34,23 +39,29 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpSuwako = Bitmap.createScaledBitmap(this.bmpSuwako,
                 (int) (this.bmpSuwako.getWidth() * SuwakoJumpActivity.X_SCALE_FACTOR),
                 (int) (this.bmpSuwako.getHeight() * SuwakoJumpActivity.Y_SCALE_FACTOR), true);
+        this.bmpBoard = BitmapFactory.decodeResource(getResources(),
+                R.drawable.board);
+        this.bmpBoard = Bitmap.createScaledBitmap(this.bmpBoard,
+                (int) (this.bmpBoard.getWidth() * SuwakoJumpActivity.X_SCALE_FACTOR),
+                (int) (this.bmpBoard.getHeight() * SuwakoJumpActivity.Y_SCALE_FACTOR), true);
+
+        this.bmpHashMap = new HashMap<String, Bitmap>();
+        this.bmpHashMap.put("background", this.bmpBackground);
+        this.bmpHashMap.put("suwako", this.bmpSuwako);
+        this.bmpHashMap.put("board", this.bmpBoard);
     }
 
     @Override
     protected void initSprite() {
-        int suwakoX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5);
-        int suwakoY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.1);
-        int suwakoW = this.bmpSuwako.getWidth() / 20;
-        int suwakoH = this.bmpSuwako.getHeight() / 2;
 
-        this.suwako = new Suwako(this.bmpSuwako,
-                new Point(suwakoX, suwakoY),
-                new Point(suwakoW, suwakoH));
     }
 
     public void onDraw(Canvas canvas) {
         canvas.drawBitmap(this.bmpBackground, 0, 0, this.mainPaint);
-        this.suwako.draw(canvas, this.mainPaint);
+        ArrayList<JSprite> spritesList = this.gameLogic.getSpritesList();
+        for (JSprite sprite : spritesList) {
+            sprite.draw(canvas, this.mainPaint);
+        }
     }
 
     @Override
@@ -58,7 +69,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.gameLogic.update();
     }
 
-    public float getSensorX(){
+    public float getSensorX() {
         return this.mainActivity.getSensorX();
     }
 }

@@ -1,4 +1,4 @@
-package SuwakoJump.Lib;
+package com.raytaylorlin.SuwakoJump.Lib;
 
 import java.util.Date;
 import java.util.Random;
