@@ -1,6 +1,8 @@
 package com.raytaylorlin.SuwakoJump;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -56,13 +58,6 @@ public class SuwakoJumpActivity extends Activity {
                 case SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW:
                     gameView = new GameView(_this);
                     _this.changeView(gameView);
-                    new Thread() {
-                        public void run() {
-                            Looper.prepare();
-                            gameView = new GameView(SuwakoJumpActivity.this);
-                            Looper.loop();
-                        }
-                    }.start();
                     break;
             }
             super.handleMessage(msg);
@@ -116,8 +111,29 @@ public class SuwakoJumpActivity extends Activity {
         return true;
     }
 
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return true;
+        // 按下键盘上返回按钮
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            new AlertDialog.Builder(this)
+                    .setTitle("退出游戏")
+                    .setMessage("确定要退出游戏吗？")
+                    .setNegativeButton("否",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // TODO Auto-generated method stub
+                                }
+                            })
+                    .setPositiveButton("是",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    finish();
+                                }
+                            }).show();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
     public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event) {

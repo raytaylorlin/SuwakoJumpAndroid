@@ -16,7 +16,6 @@ import java.util.Iterator;
 
 public class GameLogic {
     private GameView gameView;
-//    private CanvasPanel canvasPanel;
 
     private HashMap<String, Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
     private ArrayList<JSprite> spritesList = new ArrayList<JSprite>();
@@ -61,12 +60,14 @@ public class GameLogic {
         this.spritesList.clear();
         this.boardsList.clear();
 
+        //初始化板子
         for (int i = 0; i < 100; i++) {
             Board newBoard = this.getNewTypeBoard(i);
             this.boardsList.add(newBoard);
             this.add(newBoard);
         }
 
+        //初始化suwako
         int suwakoX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5);
         int suwakoY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.8);
         Bitmap bmpSuwako = this.bmpHashMap.get("suwako");
@@ -77,6 +78,13 @@ public class GameLogic {
                 new Point(suwakoW, suwakoH));
         this.add(this.suwako);
 
+        Bitmap b = this.bmpHashMap.get("game_over_text");
+        float w = b.getWidth();
+        //初始化游戏结束文字
+        this.gameOverText = new JSprite(
+                this.bmpHashMap.get("game_over_text"),
+                new Point(0, SuwakoJumpActivity.DISPLAY_HEIGHT));
+        this.add(this.gameOverText);
     }
 
     public void update() {
@@ -118,14 +126,15 @@ public class GameLogic {
                 this.suwako.currentFrameX = 20 / 2; //20 == this.suwako.sheetSize.x
                 this.boardsFallingDown = false;
             }
-            //游戏结束逻辑
+
         } else {
-//            for (int i = 0; i < this.boardsList.size(); i++) {
-//                this.boardsList.get(i).update();
-//            }
-//            if (this.gameOverText.drawPosition.y > MainGame.GAME_SCORE_BAR_HEIGHT) {
-//                this.gameOverText.drawPosition.y -= 40;
-//            } else {
+            //游戏结束逻辑
+            for (int i = 0; i < this.boardsList.size(); i++) {
+                this.boardsList.get(i).update();
+            }
+            if (this.gameOverText.getPosition().y > 0) {
+                this.gameOverText.getPosition().y -= 40;
+            } else {
 //                this.countScore.setNewPosition(new Point(223,168));
 //                if (CanvasPanel.EnterKeyPressed) {
 //                    CanvasPanel.EnterKeyPressed = false;
@@ -133,18 +142,17 @@ public class GameLogic {
 //
 //                    this.mainActivity.start();
 //                }
-//            }
+            }
         }
         //释放所有待清除的精灵的内存
         this.flushSpriteList();
     }
 
     private void notifyGameOver() {
-//        this.isGameOver = true;
-//        for (int i = 0; i < this.boardsList.size(); i++) {
-//            this.boardsList.get(i).isUpMoving = true;
-//        }
-
+        this.isGameOver = true;
+        for (int i = 0; i < this.boardsList.size(); i++) {
+            this.boardsList.get(i).isUpMoving = true;
+        }
 //        this.add(this.gameOverText);
     }
 

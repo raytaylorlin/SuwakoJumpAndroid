@@ -58,12 +58,4 @@ public class Board extends JSprite {
         this.fallingDuration = duration;
         this.fallingTotalCount = fallingTime * 3;
     }
-
-    public Point getPosition() {
-        return this.drawPosition;
-    }
-
-    public Point getSize() {
-        return this.imageSize;
-    }
 }

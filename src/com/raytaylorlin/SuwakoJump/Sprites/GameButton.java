@@ -1,4 +1,4 @@
-package com.raytaylorlin.SuwakoJump.Sprite;
+package com.raytaylorlin.SuwakoJump.Sprites;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;

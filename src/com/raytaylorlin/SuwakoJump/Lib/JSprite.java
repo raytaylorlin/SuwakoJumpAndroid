@@ -9,6 +9,11 @@ public class JSprite {
     protected Point sheetSize, imageSize;
     protected boolean toDisposed;
 
+    public JSprite(Bitmap image, Point drawPosition) {
+        this(image, drawPosition, new Point(image.getWidth(), image.getHeight()),
+                new Point(1, 1), new Point(0, 0));
+    }
+
     public JSprite(Bitmap image, Point drawPosition, Point imageSize) {
         this(image, drawPosition, imageSize, new Point(1, 1), new Point(0, 0));
     }
@@ -29,13 +34,22 @@ public class JSprite {
     public void update() {
     }
 
-    public Rect getRect(){
-        return new Rect(this.drawPosition.x,this.drawPosition.y,
-                this.drawPosition.x+this.imageSize.x,
-                this.drawPosition.y+this.imageSize.y);
+    public Rect getRect() {
+        return new Rect(this.drawPosition.x, this.drawPosition.y,
+                this.drawPosition.x + this.imageSize.x,
+                this.drawPosition.y + this.imageSize.y);
     }
 
-    public boolean isToDisposed(){
+
+    public Point getPosition() {
+        return this.drawPosition;
+    }
+
+    public Point getSize() {
+        return this.imageSize;
+    }
+
+    public boolean isToDisposed() {
         return this.toDisposed;
     }
 }

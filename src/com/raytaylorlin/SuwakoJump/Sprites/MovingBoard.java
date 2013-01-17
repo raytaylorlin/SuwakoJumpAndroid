@@ -13,7 +13,7 @@ public class MovingBoard extends Board {
     private boolean isOneSideMoving = false;
     private boolean isVerticalMoving = false;
     private int currentMovingLocation = 0;
-    private int velocity = 3;
+    private int velocity = 6;
 
     public MovingBoard(Bitmap image, Point drawPosition, boolean isVerticalMoving) {
         super(image, drawPosition, BOARD_TYPE_MOVING);

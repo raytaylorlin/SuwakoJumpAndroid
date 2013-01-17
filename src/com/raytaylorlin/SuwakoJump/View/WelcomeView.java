@@ -8,7 +8,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import com.raytaylorlin.SuwakoJump.Sprite.GameButton;
+import com.raytaylorlin.SuwakoJump.Sprites.GameButton;
 import com.raytaylorlin.SuwakoJump.R;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
@@ -106,9 +106,6 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         //屏幕被按下
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            if(this.status != 4){//当不是菜单状态时返回
-//                return false;
-//            }
             Rect btnStartGameRect = this.btnStartGame.getRect();
             double x = event.getX();
             double y = event.getY();
@@ -118,22 +115,6 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
                 this.mainActivity.myHandler.sendEmptyMessage(
                         SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
             }
-//            if(x>10 && x<10 + openSound.getWidth()
-//                    && y>70 && y<70 + openSound.getHeight()){//点击了开始有些按钮
-//                mainActivity.myHandler.sendEmptyMessage(2);//发送消息
-//            }
-//            else if(x>390 && x<390 + help.getWidth()
-//                    && y>60 && y<60 + help.getHeight()){//点击了帮助按钮
-//                mainActivity.myHandler.sendEmptyMessage(3);//发送消息
-//            }
-//            else if(x>10 && x<10 + openSound.getWidth()
-//                    && y>230 && y<230 + openSound.getHeight()){//点击了声音按钮
-//                mainActivity.isSound = !mainActivity.isSound;//将声音标志位置反
-//            }
-//            else if(x>380 && x<380 + exit.getWidth()
-//                    && y>230 && y<230 + exit.getHeight()){//点击了退出按钮
-//                System.exit(0);//退出游戏
-//            }
         }
         return super.onTouchEvent(event);//调用基类的方法
     }
