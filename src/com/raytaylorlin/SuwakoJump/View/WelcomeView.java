@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import com.raytaylorlin.SuwakoJump.Lib.ImageHelper;
 import com.raytaylorlin.SuwakoJump.Sprites.GameButton;
 import com.raytaylorlin.SuwakoJump.R;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
@@ -49,13 +50,10 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
     protected void initBitmap() {//初始化图片资源的方法
 
         this.bmpBackground = BitmapFactory.decodeResource(getResources(), R.drawable.welcome_view_background);
-        this.bmpBackground = Bitmap.createScaledBitmap(this.bmpBackground,
-                SuwakoJumpActivity.DISPLAY_WIDTH, SuwakoJumpActivity.DISPLAY_HEIGHT, true);
+        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground);
         this.bmpStartGameButton = BitmapFactory.decodeResource(getResources(),
                 R.drawable.start_game_button);
-        this.bmpStartGameButton = Bitmap.createScaledBitmap(this.bmpStartGameButton,
-                (int) (this.bmpStartGameButton.getWidth() * SuwakoJumpActivity.X_SCALE_FACTOR),
-                (int) (this.bmpStartGameButton.getHeight() * SuwakoJumpActivity.Y_SCALE_FACTOR), true);
+        this.bmpStartGameButton = ImageHelper.adjustScaleImage(this.bmpStartGameButton);
 //        background2 = BitmapFactory.decodeResource(getResources(), R.drawable.background2);//初始化背景图片
 //        startGame = BitmapFactory.decodeResource(getResources(), R.drawable.startgame);//初始化开始游戏
 //
@@ -66,8 +64,8 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
 
     @Override
     protected void initSprite() {
-        int btnX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5);
-        int btnStartGameY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.75);
+        int btnX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5458);
+        int btnStartGameY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.76875);
         int btnWidth = this.bmpStartGameButton.getWidth();
         int btnHeight = this.bmpStartGameButton.getHeight();
 
@@ -109,7 +107,6 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
             Rect btnStartGameRect = this.btnStartGame.getRect();
             double x = event.getX();
             double y = event.getY();
-            System.out.println(x + "," + y);
             if (x > btnStartGameRect.left && x < btnStartGameRect.right
                     && y > btnStartGameRect.top && y < btnStartGameRect.bottom) {
                 this.mainActivity.myHandler.sendEmptyMessage(
