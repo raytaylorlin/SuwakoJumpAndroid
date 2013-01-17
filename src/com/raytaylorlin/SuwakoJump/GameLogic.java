@@ -18,7 +18,7 @@ public class GameLogic {
     private GameView gameView;
 //    private CanvasPanel canvasPanel;
 
-    private HashMap<String,Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
+    private HashMap<String, Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
     private ArrayList<JSprite> spritesList = new ArrayList<JSprite>();
     private ArrayList<Board> boardsList = new ArrayList<Board>();
 
@@ -31,7 +31,7 @@ public class GameLogic {
     private boolean isGameOver = false;
     private boolean boardsFallingDown = false;
 
-    public GameLogic(GameView gameView,HashMap<String,Bitmap> bmpHashMap) {
+    public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap) {
         this.gameView = gameView;
         this.bmpHashMap = bmpHashMap;
         this.initSprite();
@@ -57,7 +57,7 @@ public class GameLogic {
 //        this.add(this.countScore);
     }
 
-    private void initSprite(){
+    private void initSprite() {
         this.spritesList.clear();
         this.boardsList.clear();
 
@@ -172,31 +172,28 @@ public class GameLogic {
     }
 
     private Board getNewTypeBoard(int y) {
+        Bitmap bmpBoard = this.bmpHashMap.get("board");
         Board newBoard = null;
-        int boardX = RandomHelper.getRandom(SuwakoJumpActivity.DISPLAY_WIDTH);
+        int boardX = RandomHelper.getRandom(
+                SuwakoJumpActivity.DISPLAY_WIDTH - bmpBoard.getWidth());
         int boardY = SuwakoJumpActivity.DISPLAY_HEIGHT - (y + 1) * 80;
 //        int boardY = MainGame.GAME_FIELD_HEIGHT + MainGame.GAME_SCORE_BAR_HEIGHT - (y + 1) * 40;
         float boardTypeFloat = RandomHelper.getRandom();
-        newBoard = new NormalBoard(this.bmpHashMap.get("board"),
-                new Point(boardX, boardY));
+//        newBoard = new NormalBoard(bmpBoard, new Point(boardX, boardY));
         if (boardTypeFloat < 0.1) {
-            newBoard = new VanishBoard(this.bmpHashMap.get("board"),
-                    new Point(boardX, boardY));
+            newBoard = new VanishBoard(bmpBoard, new Point(boardX, boardY));
         } else if (boardTypeFloat < 0.3) {
-            newBoard = new BrokenBoard(this.bmpHashMap.get("board"),
-                    new Point(boardX, boardY));
+            newBoard = new BrokenBoard(bmpBoard, new Point(boardX, boardY));
         } else if (boardTypeFloat < 0.5) {
             boolean isVertical = RandomHelper.getRandom() < 0.5;
-            newBoard = new MovingBoard(this.bmpHashMap.get("board"),
-                    new Point(boardX, boardY), isVertical);
+            newBoard = new MovingBoard(bmpBoard, new Point(boardX, boardY), isVertical);
         } else {
-            newBoard = new NormalBoard(this.bmpHashMap.get("board"),
-                    new Point(boardX, boardY));
+            newBoard = new NormalBoard(bmpBoard, new Point(boardX, boardY));
         }
         return newBoard;
     }
 
-    public ArrayList<JSprite> getSpritesList(){
+    public ArrayList<JSprite> getSpritesList() {
         return this.spritesList;
     }
 }

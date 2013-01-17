@@ -9,6 +9,10 @@ import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 //import SuwakoJump.Lib.SoundHelper;
 
 public class Suwako extends JSprite {
+    private final int STATUS_UP = 0;
+    private final int STATUS_DOWN = 1;
+    private final int STATUS_ATTACK = 2;
+
     private final int FIRST_V = 20;
     private final int MOVE_STEP_X = 10;
     private final int MOVE_STEP_Y = 4;
@@ -20,8 +24,10 @@ public class Suwako extends JSprite {
     public int currentFrameX = 0;
     public boolean isDead;
 
+    private int status = STATUS_UP;
     private int moveStepX = 0;
     private boolean isUp;
+    private boolean isSuperUp = true;
     private int frameYBuffer = 0;
     private int fallCount = 1;
 
@@ -41,26 +47,37 @@ public class Suwako extends JSprite {
 
     @Override
     public void update() {
-        //上升状态的逻辑更新
-        if (this.currentFrameX < this.sheetSize.x / 2) {
-            this.isUp = true;
-            if (!this.isOverLine) {
-                this.drawPosition.y -= FIRST_V - (this.currentFrameX % (this.sheetSize.x / 2));
-                this.frameYBuffer++;
-                if (this.frameYBuffer == FRAME_Y_BUFFER) {
-                    this.currentFrameX++;
-                    this.frameYBuffer = 0;
+        switch (this.status) {
+            //上升状态的逻辑更新
+            case STATUS_UP:
+                if (this.currentFrameX < this.sheetSize.x / 2) {
+                    this.isUp = true;
+                    if (!this.isOverLine) {
+                        if (this.isSuperUp) {
+                            this.drawPosition.y -= FIRST_V * 5 - (this.currentFrameX % (this.sheetSize.x / 2));
+                            this.isSuperUp = false;
+                        } else {
+                            this.drawPosition.y -= FIRST_V - (this.currentFrameX % (this.sheetSize.x / 2));
+                        }
+                        this.frameYBuffer++;
+                        if (this.frameYBuffer == FRAME_Y_BUFFER) {
+                            this.currentFrameX++;
+                            this.frameYBuffer = 0;
+                        }
+                    } else {
+                        this.currentFrameX += 2;
+                    }
+                } else {
+                    this.setStatus(STATUS_DOWN);
                 }
-            } else {
-                this.currentFrameX += 2;
-            }
-
-            //下降状态的逻辑更新
-        } else {
-            this.isUp = false;
-            this.drawPosition.y += MOVE_STEP_Y * fallCount * 0.3;
-            this.currentFrameX = this.sheetSize.x / 2 + 1;
-            fallCount++;
+                break;
+            case STATUS_DOWN:
+                this.drawPosition.y += MOVE_STEP_Y * fallCount * 0.3;
+                this.currentFrameX = this.sheetSize.x / 2 + 1;
+                fallCount++;
+                break;
+            case STATUS_ATTACK:
+                break;
         }
         //判断是否过刷新线
         int gameW = SuwakoJumpActivity.DISPLAY_WIDTH;
@@ -73,7 +90,6 @@ public class Suwako extends JSprite {
         } else if (this.drawPosition.x + this.imageSize.x / 2 < 0) {
             this.drawPosition.x = gameW - this.imageSize.x / 2;
         }
-
         //判断是否死亡
         if (this.drawPosition.y > gameH + gameSB) {
             this.isDead = true;
@@ -110,9 +126,7 @@ public class Suwako extends JSprite {
             } else if (fullType.contains("VanishBoard")) {
                 ((VanishBoard) board).vanish();
             }
-            this.currentFrameX = 0;
-            this.fallCount = 1;
-            this.isUp = true;
+            this.setStatus(STATUS_UP);
             this.drawPosition.y = boardPos.y - this.imageSize.y;
 //            SoundHelper.play(this.seJump);
             return true;
@@ -141,5 +155,20 @@ public class Suwako extends JSprite {
             f = 1;
         }
         return f;
+    }
+
+    private void setStatus(int statusIndex) {
+        this.status = statusIndex;
+        switch (statusIndex){
+            case STATUS_UP:
+                this.currentFrameX = 0;
+                this.fallCount = 1;
+                this.isUp = true;
+                break;
+            case STATUS_DOWN:
+                this.isUp = false;
+                break;
+
+        }
     }
 }
