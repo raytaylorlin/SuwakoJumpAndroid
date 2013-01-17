@@ -13,7 +13,8 @@ import java.util.HashMap;
 public class GameView extends CommonView implements SurfaceHolder.Callback {
     //背景图片
     private Bitmap bmpBackground, bmpScoreBoard,
-            bmpSuwako, bmpBoard, bmpGameOverText;
+            bmpSuwako, bmpBoard, bmpGameOverText,
+            bmpNumber;
     private HashMap<String, Bitmap> bmpHashMap;
 
     private GameLogic gameLogic;
@@ -39,6 +40,8 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.board);
         this.bmpGameOverText= BitmapFactory.decodeResource(getResources(),
                 R.drawable.gameover_text);
+        this.bmpNumber= BitmapFactory.decodeResource(getResources(),
+                R.drawable.number);
 
         //调整图片尺寸
         this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground);
@@ -46,6 +49,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpSuwako = ImageHelper.adjustScaleImage(this.bmpSuwako);
         this.bmpBoard = ImageHelper.adjustScaleImage(this.bmpBoard);
         this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText);
+        this.bmpNumber = ImageHelper.adjustScaleImage(this.bmpNumber);
 
         //建立字符串和图片的映射
         this.bmpHashMap = new HashMap<String, Bitmap>();
@@ -54,6 +58,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("suwako", this.bmpSuwako);
         this.bmpHashMap.put("board", this.bmpBoard);
         this.bmpHashMap.put("game_over_text", this.bmpGameOverText);
+        this.bmpHashMap.put("number", this.bmpNumber);
     }
 
     @Override
@@ -67,7 +72,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         for (JSprite sprite : spritesList) {
             sprite.draw(canvas, this.mainPaint);
         }
-        canvas.drawBitmap(this.bmpScoreBoard, 0, 0, this.mainPaint);
+//        canvas.drawBitmap(this.bmpScoreBoard, 0, 0, this.mainPaint);
 
     }
 

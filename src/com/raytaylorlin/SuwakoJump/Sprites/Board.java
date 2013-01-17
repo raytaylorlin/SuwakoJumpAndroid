@@ -9,7 +9,7 @@ public class Board extends JSprite {
     protected static final int BOARD_TYPE_BROKEN = 1;
     protected static final int BOARD_TYPE_MOVING = 2;
     protected static final int BOARD_TYPE_VANISH = 3;
-    protected static final int UP_MOVING_V = 20;
+    protected static final int UP_MOVING_V = 40;
 
     public boolean isDownMoving, isUpMoving;
     protected int fallingCount, fallingDuration;

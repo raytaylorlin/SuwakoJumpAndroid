@@ -45,6 +45,10 @@ public class JSprite {
         return this.drawPosition;
     }
 
+    public void setPosition(Point point) {
+        this.drawPosition = point;
+    }
+
     public Point getSize() {
         return this.imageSize;
     }

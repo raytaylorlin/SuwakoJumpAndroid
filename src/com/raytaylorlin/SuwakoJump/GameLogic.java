@@ -22,8 +22,8 @@ public class GameLogic {
     private ArrayList<Board> boardsList = new ArrayList<Board>();
 
 
-    private JSprite background, scoreBar, gameOverText;
-    //    private CountScore countScore;
+    private JSprite scoreBoard, gameOverText;
+    private CountScore countScore;
     private Suwako suwako;
 
     private int gameScore = 0;
@@ -78,19 +78,30 @@ public class GameLogic {
                 new Point(suwakoW, suwakoH));
         this.add(this.suwako);
 
-        Bitmap b = this.bmpHashMap.get("game_over_text");
-        float w = b.getWidth();
         //初始化游戏结束文字
         this.gameOverText = new JSprite(
                 this.bmpHashMap.get("game_over_text"),
                 new Point(0, SuwakoJumpActivity.DISPLAY_HEIGHT));
         this.add(this.gameOverText);
+
+        this.scoreBoard = new JSprite(
+                this.bmpHashMap.get("score_board"),
+                new Point(0, 0));
+        this.add(this.scoreBoard);
+
+        //初始化分数精灵
+        Bitmap bmpNumber = this.bmpHashMap.get("number");
+        this.countScore = new CountScore(bmpNumber,
+                new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.2917),
+                        (int) (bmpNumber.getHeight() * 0.2)));
+        this.add(this.countScore);
     }
 
     public void update() {
         //游戏未结束的时候
         if (!this.isGameOver) {
-//            this.countScore.update();
+            //更新显示分数
+            this.countScore.update();
             //更新主角逻辑
             this.suwako.update();
             float x = this.gameView.getSensorX();
@@ -98,10 +109,12 @@ public class GameLogic {
             if (this.suwako.isDead) {
                 this.notifyGameOver();
             }
-            //主角超过中线，设置所有板子下降
+            //主角超过中线的情况
             if (this.suwako.isOverLine && !this.boardsFallingDown) {
+                //计算得分
                 int increaseScore = this.suwako.getDuration();
-//                this.countScore.increaseScore(increaseScore / 10 * 10);
+                this.countScore.increaseScore(increaseScore / 10 * 10);
+                //设置所有板子下降
                 for (int i = 0; i < this.boardsList.size(); i++) {
                     Board checkBoard = this.boardsList.get(i);
                     checkBoard.setFallingDown(increaseScore, this.suwako.getFallingTime());
