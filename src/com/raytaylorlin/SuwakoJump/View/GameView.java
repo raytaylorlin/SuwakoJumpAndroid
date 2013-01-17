@@ -44,12 +44,12 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.number);
 
         //调整图片尺寸
-        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground);
-        this.bmpScoreBoard = ImageHelper.adjustScaleImage(this.bmpScoreBoard);
-        this.bmpSuwako = ImageHelper.adjustScaleImage(this.bmpSuwako);
-        this.bmpBoard = ImageHelper.adjustScaleImage(this.bmpBoard);
-        this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText);
-        this.bmpNumber = ImageHelper.adjustScaleImage(this.bmpNumber);
+        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground, true);
+        this.bmpScoreBoard = ImageHelper.adjustScaleImage(this.bmpScoreBoard, false);
+        this.bmpSuwako = ImageHelper.adjustScaleImage(this.bmpSuwako, false);
+        this.bmpBoard = ImageHelper.adjustScaleImage(this.bmpBoard, false);
+        this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText, false);
+        this.bmpNumber = ImageHelper.adjustScaleImage(this.bmpNumber, false);
 
         //建立字符串和图片的映射
         this.bmpHashMap = new HashMap<String, Bitmap>();

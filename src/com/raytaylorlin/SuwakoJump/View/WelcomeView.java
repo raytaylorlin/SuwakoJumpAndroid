@@ -50,10 +50,10 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
     protected void initBitmap() {//初始化图片资源的方法
 
         this.bmpBackground = BitmapFactory.decodeResource(getResources(), R.drawable.welcome_view_background);
-        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground);
+        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground, true);
         this.bmpStartGameButton = BitmapFactory.decodeResource(getResources(),
                 R.drawable.start_game_button);
-        this.bmpStartGameButton = ImageHelper.adjustScaleImage(this.bmpStartGameButton);
+        this.bmpStartGameButton = ImageHelper.adjustScaleImage(this.bmpStartGameButton, false);
 //        background2 = BitmapFactory.decodeResource(getResources(), R.drawable.background2);//初始化背景图片
 //        startGame = BitmapFactory.decodeResource(getResources(), R.drawable.startgame);//初始化开始游戏
 //
