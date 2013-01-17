@@ -5,6 +5,7 @@ package com.raytaylorlin.SuwakoJump;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import com.raytaylorlin.SuwakoJump.Lib.FileHelper;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
 import com.raytaylorlin.SuwakoJump.Lib.RandomHelper;
 import com.raytaylorlin.SuwakoJump.Sprites.*;
@@ -34,26 +35,6 @@ public class GameLogic {
         this.gameView = gameView;
         this.bmpHashMap = bmpHashMap;
         this.initSprite();
-    }
-
-    private void init() {
-
-//        this.background = new Board(this.mainActivity, fieldImage, new Point(0, MainGame.GAME_SCORE_BAR_HEIGHT),
-//                new Point(MainGame.GAME_FIELD_WIDTH, MainGame.GAME_FIELD_HEIGHT), new Point(1, 1), new Point(0, 0));
-//        this.scoreBar = new Board(this.mainActivity, scoreBarImage, new Point(0, 0),
-//                new Point(MainGame.GAME_FIELD_WIDTH, MainGame.GAME_SCORE_BAR_HEIGHT), new Point(1, 1), new Point(0, 0));
-//        this.countScore = new CountScore(this.mainActivity, scoreNumberImage);
-//        this.gameOverText = new Board(this.mainActivity, gameOverTextImage, new Point(0, MainGame.GAME_FIELD_HEIGHT + MainGame.GAME_SCORE_BAR_HEIGHT),
-//                new Point(MainGame.GAME_FIELD_WIDTH, MainGame.GAME_FIELD_HEIGHT), new Point(1, 1), new Point(0, 0));
-//        this.add(this.background);
-//
-//        this.suwako = new Suwako(this.mainActivity, suwakoImage,
-//                new Point(MainGame.GAME_FIELD_WIDTH / 2, MainGame.GAME_FIELD_HEIGHT + MainGame.GAME_SCORE_BAR_HEIGHT - 128), new Point(64, 128), new Point(20, 1), new Point(0, 0));
-//
-
-
-//        this.add(this.scoreBar);
-//        this.add(this.countScore);
     }
 
     private void initSprite() {
@@ -100,8 +81,6 @@ public class GameLogic {
     public void update() {
         //游戏未结束的时候
         if (!this.isGameOver) {
-            //更新显示分数
-            this.countScore.update();
             //更新主角逻辑
             this.suwako.update();
             float x = this.gameView.getSensorX();
@@ -112,8 +91,9 @@ public class GameLogic {
             //主角超过中线的情况
             if (this.suwako.isOverLine && !this.boardsFallingDown) {
                 //计算得分
-                int increaseScore = this.suwako.getDuration();
-                this.countScore.increaseScore(increaseScore / 10 * 10);
+                int increaseScore = this.suwako.getDuration() / 10 * 10;
+                this.gameScore += increaseScore;
+                this.countScore.increaseScore(increaseScore);
                 //设置所有板子下降
                 for (int i = 0; i < this.boardsList.size(); i++) {
                     Board checkBoard = this.boardsList.get(i);
@@ -139,7 +119,6 @@ public class GameLogic {
                 this.suwako.currentFrameX = 20 / 2; //20 == this.suwako.sheetSize.x
                 this.boardsFallingDown = false;
             }
-
         } else {
             //游戏结束逻辑
             for (int i = 0; i < this.boardsList.size(); i++) {
@@ -157,8 +136,14 @@ public class GameLogic {
 //                }
             }
         }
+        //更新显示分数
+        this.countScore.update();
         //释放所有待清除的精灵的内存
         this.flushSpriteList();
+    }
+
+    public void setSuwakoAttack(Point point) {
+        this.suwako.attack(point);
     }
 
     private void notifyGameOver() {
@@ -166,7 +151,44 @@ public class GameLogic {
         for (int i = 0; i < this.boardsList.size(); i++) {
             this.boardsList.get(i).isUpMoving = true;
         }
+        //显示得分和最高分
+        this.showResultScore();
+
+
 //        this.add(this.gameOverText);
+    }
+
+    /*
+     * 显示得分和最高分
+     */
+    private void showResultScore() {
+        FileHelper fileHelper = new FileHelper(this.gameView.getContext());
+        String scoreStr = String.valueOf(this.gameScore) + "\n";
+        //将分数写入到排行榜文件中
+        fileHelper.writeFile("score1.dat", scoreStr);
+        //读取排行榜文件，找出最大分数
+        String readContent = fileHelper.readFile("score1.dat");
+        String[] scoreStrArray = readContent.split("\n");
+        int highScore = 0;
+        for (String s : scoreStrArray) {
+            int number = Integer.parseInt(s);
+            if (number > highScore) {
+                highScore = number;
+            }
+        }
+        Bitmap bmpNumber = this.bmpHashMap.get("number");
+        double xScale = SuwakoJumpActivity.X_SCALE_FACTOR;
+        double yScale = SuwakoJumpActivity.Y_SCALE_FACTOR;
+        CountScore resultScoreSprite = new CountScore(bmpNumber,
+                new Point((int) (480 * 0.6 * xScale),
+                        (int) (800 * 0.285 * yScale)));
+        resultScoreSprite.setFixedNumber(this.gameScore);
+        CountScore highScoreSprite = new CountScore(bmpNumber,
+                new Point((int) (480 * 0.6 * xScale),
+                        (int) (800 * 0.34 * yScale)));
+        highScoreSprite.setFixedNumber(highScore);
+        this.add(resultScoreSprite);
+        this.add(highScoreSprite);
     }
 
     private void add(JSprite sprite) {
@@ -216,5 +238,9 @@ public class GameLogic {
 
     public ArrayList<JSprite> getSpritesList() {
         return this.spritesList;
+    }
+
+    public boolean isGameOver() {
+        return this.isGameOver;
     }
 }

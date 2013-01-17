@@ -38,9 +38,9 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.suwako_jump);
         this.bmpBoard = BitmapFactory.decodeResource(getResources(),
                 R.drawable.board);
-        this.bmpGameOverText= BitmapFactory.decodeResource(getResources(),
+        this.bmpGameOverText = BitmapFactory.decodeResource(getResources(),
                 R.drawable.gameover_text);
-        this.bmpNumber= BitmapFactory.decodeResource(getResources(),
+        this.bmpNumber = BitmapFactory.decodeResource(getResources(),
                 R.drawable.number);
 
         //调整图片尺寸
@@ -85,8 +85,12 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
 //            Rect btnStartGameRect = this.btnStartGame.getRect();
             double x = event.getX();
             double y = event.getY();
-            this.mainActivity.myHandler.sendEmptyMessage(
-                    SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
+            if (this.gameLogic.isGameOver()) {
+                this.mainActivity.myHandler.sendEmptyMessage(
+                        SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
+            } else {
+                this.gameLogic.setSuwakoAttack(new Point((int) x, (int) y));
+            }
 //            if (x > btnStartGameRect.left && x < btnStartGameRect.right
 //                    && y > btnStartGameRect.top && y < btnStartGameRect.bottom) {
 //                this.mainActivity.myHandler.sendEmptyMessage(

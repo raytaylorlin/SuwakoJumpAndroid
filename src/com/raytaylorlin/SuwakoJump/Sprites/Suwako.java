@@ -135,6 +135,10 @@ public class Suwako extends JSprite {
         }
     }
 
+    public void attack(Point point){
+        //TODO: 攻击
+    }
+
     public int getDuration() {
         int gameH = SuwakoJumpActivity.DISPLAY_HEIGHT;
         int gameSB = 0;
