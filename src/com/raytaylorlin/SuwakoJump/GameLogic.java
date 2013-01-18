@@ -27,7 +27,7 @@ public class GameLogic {
 
 
     private JSprite scoreBoard, gameOverText;
-    private CountScore countScore;
+    private CountScore countScore,resultScoreSprite,highScoreSprite;
     private Suwako suwako;
 
     private int gameScore = 0;
@@ -40,6 +40,9 @@ public class GameLogic {
         this.initSprite();
     }
 
+    /*
+     * 初始化精灵
+     */
     private void initSprite() {
         this.spritesList.clear();
         this.boardsList.clear();
@@ -53,7 +56,6 @@ public class GameLogic {
         this.suwako = new Suwako(bmpSuwako,
                 new Point(suwakoX, suwakoY),
                 new Point(suwakoW, suwakoH));
-
 
         //初始化板子
         for (int i = 0; i < 100; i++) {
@@ -132,13 +134,8 @@ public class GameLogic {
             if (this.gameOverText.getPosition().y > 0) {
                 this.gameOverText.getPosition().y -= 40;
             } else {
-//                this.countScore.setNewPosition(new Point(223,168));
-//                if (CanvasPanel.EnterKeyPressed) {
-//                    CanvasPanel.EnterKeyPressed = false;
-//                    this.gameOverText.toDisposed = true;
-//
-//                    this.mainActivity.start();
-//                }
+                this.highScoreSprite.setVisible(true);
+                this.resultScoreSprite.setVisible(true);
             }
         }
         //更新显示分数
@@ -151,6 +148,9 @@ public class GameLogic {
         this.suwako.attack(point);
     }
 
+    /*
+     * 通知游戏结束，进行相关处理
+     */
     private void notifyGameOver() {
         this.isGameOver = true;
         for (int i = 0; i < this.boardsList.size(); i++) {
@@ -158,13 +158,10 @@ public class GameLogic {
         }
         //显示得分和最高分
         this.showResultScore();
-
-
-//        this.add(this.gameOverText);
     }
 
     /*
-     * 显示得分和最高分
+     * 在Gameover界面中显示得分和最高分
      */
     private void showResultScore() {
         FileHelper fileHelper = new FileHelper(this.gameView.getContext());
@@ -184,41 +181,25 @@ public class GameLogic {
         Bitmap bmpNumber = this.bmpHashMap.get("number");
         double xScale = SuwakoJumpActivity.X_SCALE_FACTOR;
         double yScale = SuwakoJumpActivity.Y_SCALE_FACTOR;
-        CountScore resultScoreSprite = new CountScore(bmpNumber,
+        this.resultScoreSprite = new CountScore(bmpNumber,
                 new Point((int) (480 * 0.6 * xScale),
                         (int) (800 * 0.285 * yScale)));
-        resultScoreSprite.setFixedNumber(this.gameScore);
-        CountScore highScoreSprite = new CountScore(bmpNumber,
+        this.resultScoreSprite.setFixedNumber(this.gameScore);
+        this.resultScoreSprite.setVisible(false);
+        this.highScoreSprite = new CountScore(bmpNumber,
                 new Point((int) (480 * 0.6 * xScale),
                         (int) (800 * 0.34 * yScale)));
-        highScoreSprite.setFixedNumber(highScore);
+        this.highScoreSprite.setFixedNumber(highScore);
+        this.highScoreSprite.setVisible(false);
         this.add(resultScoreSprite);
         this.add(highScoreSprite);
     }
 
-    private void add(JSprite sprite) {
-        this.spritesList.add(sprite);
-    }
-
-    private void flushSpriteList() {
-        Iterator<JSprite> it = this.spritesList.iterator();
-        while (it.hasNext()) {
-            JSprite sprite = it.next();
-            if (sprite.isToDisposed()) {
-                it.remove();
-//                sprite = null;
-                if (sprite != null) {
-                    if (this.spritesList.contains(sprite)) {
-                        this.spritesList.remove(sprite);
-                    }
-                    if (this.boardsList.contains(sprite)) {
-                        this.boardsList.remove(sprite);
-                    }
-                }
-            }
-        }
-    }
-
+    /*
+     * 获取新类型的板子
+     * @param y
+     * @return 新产生的板子
+     */
     private Board getNewTypeBoard(int y) {
         Bitmap bmpBoard = this.bmpHashMap.get("board");
         Board newBoard = null;
@@ -257,11 +238,46 @@ public class GameLogic {
 
     }
 
+    /*
+    * 获取精灵列表
+    * @return 精灵列表
+    */
     public ArrayList<JSprite> getSpritesList() {
         return this.spritesList;
     }
 
+    /*
+     * 查询游戏是否结束
+     * @return 游戏是否接受
+     */
     public boolean isGameOver() {
         return this.isGameOver;
+    }
+
+    /*
+    * 将精灵添加入精灵列表
+    * @param sprite 要添加的精灵
+    */
+    private void add(JSprite sprite) {
+        this.spritesList.add(sprite);
+    }
+
+    private void flushSpriteList() {
+        Iterator<JSprite> it = this.spritesList.iterator();
+        while (it.hasNext()) {
+            JSprite sprite = it.next();
+            if (sprite.isToDisposed()) {
+                it.remove();
+//                sprite = null;
+                if (sprite != null) {
+                    if (this.spritesList.contains(sprite)) {
+                        this.spritesList.remove(sprite);
+                    }
+                    if (this.boardsList.contains(sprite)) {
+                        this.boardsList.remove(sprite);
+                    }
+                }
+            }
+        }
     }
 }

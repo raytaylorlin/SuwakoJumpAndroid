@@ -15,7 +15,7 @@ public class CountScore extends JSprite {
     private static Bitmap scoreNumberImage;
     private ArrayList<ScoreNumber> numberList = new ArrayList<ScoreNumber>();
     private int realNumber, showNumber;
-    private int increaseStepScore = 0;
+    private boolean isVisible = true;
 
     public CountScore(Bitmap image, Point drawPosition) {
         super(image, drawPosition);
@@ -25,14 +25,18 @@ public class CountScore extends JSprite {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        for (int i = 0; i < this.numberList.size(); i++) {
-            this.numberList.get(i).draw(canvas, paint);
+        if (this.isVisible) {
+            for (int i = 0; i < this.numberList.size(); i++) {
+                this.numberList.get(i).draw(canvas, paint);
+            }
         }
     }
 
     public void update() {
         if (this.showNumber < this.realNumber) {
-            this.showNumber += 10;
+            int delta = this.realNumber - this.showNumber;
+            int increaseStepScore = delta / 100 * 10 + 10;
+            this.showNumber += increaseStepScore;
             int number = this.showNumber;
             int bitTotal = (int) (Math.log10(this.showNumber)) + 1;
             for (int i = 0; i < bitTotal; i++) {
@@ -54,13 +58,17 @@ public class CountScore extends JSprite {
 
     public void increaseScore(int n) {
         this.realNumber += n;
-        this.increaseStepScore = (this.realNumber - this.showNumber) / 10;
+
     }
 
     public void setNewPosition(Point point) {
         for (int i = 0; i < this.numberList.size(); i++) {
             this.numberList.get(i).setPosition(point);
         }
+    }
+
+    public void setVisible(boolean flag) {
+        this.isVisible = flag;
     }
 
     public void setFixedNumber(int score) {
