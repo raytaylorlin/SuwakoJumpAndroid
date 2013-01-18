@@ -24,10 +24,10 @@ public class GameLogic {
     private HashMap<String, Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
     private ArrayList<JSprite> spritesList = new ArrayList<JSprite>();
     private ArrayList<Board> boardsList = new ArrayList<Board>();
-
+    private StageMap stageMap;
 
     private JSprite scoreBoard, gameOverText;
-    private CountScore countScore,resultScoreSprite,highScoreSprite;
+    private CountScore countScore, resultScoreSprite, highScoreSprite;
     private Suwako suwako;
 
     private int gameScore = 0;
@@ -44,24 +44,25 @@ public class GameLogic {
      * 初始化精灵
      */
     private void initSprite() {
+        //初始化关卡计算类
+        StageMap.setBitmap(this.bmpHashMap);
+
         this.spritesList.clear();
         this.boardsList.clear();
 
         //初始化suwako
         int suwakoX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5);
         int suwakoY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.8);
-        Bitmap bmpSuwako = this.bmpHashMap.get("suwako");
-        int suwakoW = bmpSuwako.getWidth() / 20;
-        int suwakoH = bmpSuwako.getHeight() / 2;
-        this.suwako = new Suwako(bmpSuwako,
+        int suwakoW = this.bmpHashMap.get("suwako_jump").getWidth() / 20;
+        int suwakoH = this.bmpHashMap.get("suwako_jump").getHeight() / 2;
+        this.suwako = new Suwako(this.bmpHashMap,
                 new Point(suwakoX, suwakoY),
-                new Point(suwakoW, suwakoH));
+                new Point(suwakoW, suwakoH), this);
 
         //初始化板子
-        for (int i = 0; i < 100; i++) {
-            Board newBoard = this.getNewTypeBoard(i);
-            this.boardsList.add(newBoard);
-            this.add(newBoard);
+        this.boardsList = StageMap.getStageMap(1);
+        for (Board board : this.boardsList) {
+            this.add(board);
         }
 
         //初始化游戏结束文字
@@ -149,6 +150,13 @@ public class GameLogic {
     }
 
     /*
+     * 通知过关，进行相关处理
+     */
+    public void notifyStageClear() {
+        //TODO: 过关逻辑
+    }
+
+    /*
      * 通知游戏结束，进行相关处理
      */
     private void notifyGameOver() {
@@ -193,49 +201,6 @@ public class GameLogic {
         this.highScoreSprite.setVisible(false);
         this.add(resultScoreSprite);
         this.add(highScoreSprite);
-    }
-
-    /*
-     * 获取新类型的板子
-     * @param y
-     * @return 新产生的板子
-     */
-    private Board getNewTypeBoard(int y) {
-        Bitmap bmpBoard = this.bmpHashMap.get("board");
-        Board newBoard = null;
-        Item newItem = null;
-        //随机计算板子的位置
-        int boardX = RandomHelper.getRandom(
-                SuwakoJumpActivity.DISPLAY_WIDTH - bmpBoard.getWidth());
-        int boardY = SuwakoJumpActivity.DISPLAY_HEIGHT - (y + 1) * 80;
-//        int boardY = MainGame.GAME_FIELD_HEIGHT + MainGame.GAME_SCORE_BAR_HEIGHT - (y + 1) * 40;
-
-        float boardTypeFloat = RandomHelper.getRandom();
-//        newBoard = new NormalBoard(bmpBoard, new Point(boardX, boardY));
-        if (boardTypeFloat < 0.1) {
-            newBoard = new VanishBoard(bmpBoard, new Point(boardX, boardY));
-        } else if (boardTypeFloat < 0.3) {
-            newBoard = new BrokenBoard(bmpBoard, new Point(boardX, boardY));
-        } else if (boardTypeFloat < 0.5) {
-            boolean isVertical = RandomHelper.getRandom() < 0.5;
-            newBoard = new MovingBoard(bmpBoard, new Point(boardX, boardY), isVertical);
-        } else {
-            newBoard = new NormalBoard(bmpBoard, new Point(boardX, boardY));
-        }
-
-        //设置道具
-        float itemTypeFloat = RandomHelper.getRandom();
-        Point bPos = newBoard.getPosition();
-        Point bSize = newBoard.getSize();
-        Bitmap bmpItemSpring = this.bmpHashMap.get("item_spring");
-        newItem = new Spring(this.suwako, bmpItemSpring,
-                new Point(RandomHelper.getRandom(bPos.x,
-                        bPos.x + bSize.x - bmpItemSpring.getWidth()),
-                        bPos.y - bmpItemSpring.getHeight()));
-        newBoard.setItem(newItem);
-
-        return newBoard;
-
     }
 
     /*

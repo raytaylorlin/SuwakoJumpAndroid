@@ -5,7 +5,7 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
-import com.raytaylorlin.SuwakoJump.TutorialThread;
+import com.raytaylorlin.SuwakoJump.Lib.TutorialThread;
 
 public abstract class CommonView extends SurfaceView implements SurfaceHolder.Callback {
     //主activity的引用

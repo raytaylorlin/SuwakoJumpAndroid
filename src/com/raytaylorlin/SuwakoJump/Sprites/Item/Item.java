@@ -11,15 +11,13 @@ public abstract class Item extends JSprite {
 //    protected static final int BOARD_TYPE_MOVING = 2;
 //    protected static final int BOARD_TYPE_VANISH = 3;
     protected static final int UP_MOVING_V = 40;
-    protected Suwako suwako;
 
     public boolean isDownMoving, isUpMoving;
     protected int fallingCount, fallingDuration;
     protected int fallingTotalCount = 1;
 
-    public Item(Suwako suwako, Bitmap image, Point drawPosition) {
+    public Item(Bitmap image, Point drawPosition) {
         super(image, drawPosition);
-        this.suwako = suwako;
     }
 
     /*
@@ -71,9 +69,9 @@ public abstract class Item extends JSprite {
     /*
      * 获取道具效果（供子类覆写）
      */
-    public void gainEffect() {
-        if (this.suwako == null) {
-            return;
-        }
+    public void gainEffect(Suwako suwako) {
+//        if (this.suwako == null) {
+//            return;
+//        }
     }
 }

@@ -8,8 +8,8 @@ public class Spring extends Item {
     private boolean isShort = false;
     private int shortCount = 0, SHORT_TOTAL_COUNT = 3;
 
-    public Spring(Suwako suwako, Bitmap image, Point drawPosition) {
-        super(suwako, image, drawPosition);
+    public Spring(Bitmap image, Point drawPosition) {
+        super(image, drawPosition);
     }
 
     @Override
@@ -27,12 +27,10 @@ public class Spring extends Item {
     }
 
     @Override
-    public void gainEffect() {
-        if (this.suwako != null) {
-            this.suwako.setSuperUp();
-            this.isShort = true;
-            this.drawPosition.y += this.imageSize.y;
-            this.imageSize.y /= 2;
-        }
+    public void gainEffect(Suwako suwako) {
+        suwako.setSuperUp();
+        this.isShort = true;
+        this.drawPosition.y += this.imageSize.y;
+        this.imageSize.y /= 2;
     }
 }

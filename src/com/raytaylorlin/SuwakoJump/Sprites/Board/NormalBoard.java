@@ -7,6 +7,5 @@ public class NormalBoard extends Board {
     public NormalBoard(Bitmap image, Point drawPosition) {
         super(image, drawPosition, BOARD_TYPE_NORMAL);
     }
-
 }
 

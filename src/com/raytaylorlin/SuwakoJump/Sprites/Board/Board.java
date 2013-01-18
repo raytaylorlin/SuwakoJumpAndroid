@@ -11,6 +11,7 @@ public abstract class Board extends JSprite {
     protected static final int BOARD_TYPE_BROKEN = 1;
     protected static final int BOARD_TYPE_MOVING = 2;
     protected static final int BOARD_TYPE_VANISH = 3;
+    protected static final int BOARD_TYPE_FLAG = 4;
     //上升速度
     protected static final int UP_MOVING_V = 40;
 
@@ -25,8 +26,8 @@ public abstract class Board extends JSprite {
     protected int fallingTotalCount = 1;
 
     public Board(Bitmap image, Point drawPosition, int boardType) {
-        super(image, drawPosition, new Point(image.getWidth(), image.getWidth() / 4),
-                new Point(1, 1), new Point(0, image.getWidth() / 4 * boardType));
+        super(image, drawPosition, new Point(image.getWidth(), image.getHeight()),
+                new Point(1, 1), new Point(0, 0));
     }
 
     /*

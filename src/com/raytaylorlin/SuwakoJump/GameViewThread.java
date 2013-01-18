@@ -1,6 +1,7 @@
 package com.raytaylorlin.SuwakoJump;
 
 import android.view.SurfaceHolder;
+import com.raytaylorlin.SuwakoJump.Lib.TutorialThread;
 import com.raytaylorlin.SuwakoJump.View.CommonView;
 
 public class GameViewThread extends TutorialThread {

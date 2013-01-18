@@ -1,12 +1,15 @@
 package com.raytaylorlin.SuwakoJump.Sprites;
 
 import android.graphics.*;
+import com.raytaylorlin.SuwakoJump.GameLogic;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
 import com.raytaylorlin.SuwakoJump.Sprites.Board.Board;
 import com.raytaylorlin.SuwakoJump.Sprites.Board.BrokenBoard;
 import com.raytaylorlin.SuwakoJump.Sprites.Board.VanishBoard;
 import com.raytaylorlin.SuwakoJump.Sprites.Item.Item;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
+
+import java.util.HashMap;
 //import SuwakoJump.Frame.MainGame;
 //import SuwakoJump.Frame.CanvasPanel;
 //import SuwakoJump.Lib.SoundEffect;
@@ -16,13 +19,16 @@ public class Suwako extends JSprite {
     private final int STATUS_UP = 0;
     private final int STATUS_DOWN = 1;
     private final int STATUS_ATTACK = 2;
+    private final int STATUS_WIN = 3;
 
     private final int FIRST_V = 20;
     private final int MOVE_STEP_X = 10;
     private final int MOVE_STEP_Y = 4;
     private final int FRAME_Y_BUFFER = 2;
 
-//    private SoundEffect seJump=new SoundEffect("sound/jump.wav");
+    //    private SoundEffect seJump=new SoundEffect("sound/jump.wav");
+    private HashMap<String, Bitmap> bmpHashMap;
+    private GameLogic gameLogic;
 
     public boolean isOverLine;
     public int currentFrameX = 0;
@@ -35,17 +41,28 @@ public class Suwako extends JSprite {
     private int frameYBuffer = 0;
     private int fallCount = 1;
 
-    public Suwako(Bitmap image, Point drawPosition, Point imageSize) {
-        super(image, drawPosition, imageSize);
+    public Suwako(HashMap<String, Bitmap> bmpHashMap,
+                  Point drawPosition, Point imageSize, GameLogic gameLogic) {
+        super(bmpHashMap.get("suwako_jump"), drawPosition, imageSize);
+        this.bmpHashMap = bmpHashMap;
+        this.gameLogic = gameLogic;
         this.sheetSize = new Point(20, 2);
     }
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
-        Rect srcRect = new Rect(this.cutPosition.x + this.currentFrameX * this.imageSize.x,
-                this.cutPosition.y, this.cutPosition.x + (this.currentFrameX + 1) * this.imageSize.x, this.cutPosition.y + this.imageSize.y);
-        Rect dstRect = new Rect(this.drawPosition.x, this.drawPosition.y,
-                this.drawPosition.x + this.imageSize.x, this.drawPosition.y + this.imageSize.y);
+        Rect srcRect, dstRect;
+        if (this.status == STATUS_UP || this.status == STATUS_DOWN) {
+            srcRect = new Rect(this.cutPosition.x + this.currentFrameX * this.imageSize.x,
+                    this.cutPosition.y, this.cutPosition.x + (this.currentFrameX + 1) * this.imageSize.x, this.cutPosition.y + this.imageSize.y);
+            dstRect = new Rect(this.drawPosition.x, this.drawPosition.y,
+                    this.drawPosition.x + this.imageSize.x, this.drawPosition.y + this.imageSize.y);
+        } else {
+            srcRect = new Rect(this.cutPosition.x, this.cutPosition.y,
+                    this.cutPosition.x + this.imageSize.x, this.cutPosition.y + this.imageSize.y);
+            dstRect = new Rect(this.drawPosition.x, this.drawPosition.y,
+                    this.drawPosition.x + this.imageSize.x, this.drawPosition.y + this.imageSize.y);
+        }
         canvas.drawBitmap(this.drawImage, srcRect, dstRect, paint);
     }
 
@@ -79,31 +96,35 @@ public class Suwako extends JSprite {
                 this.currentFrameX = this.sheetSize.x / 2 + 1;
                 fallCount++;
                 break;
+            case STATUS_WIN:
+                break;
             case STATUS_ATTACK:
                 break;
         }
-        //判断是否过刷新线
-        int gameW = SuwakoJumpActivity.DISPLAY_WIDTH;
-        int gameH = SuwakoJumpActivity.DISPLAY_HEIGHT;
-        int gameSB = 0;
-        this.isOverLine = this.drawPosition.y < gameH / 2 + gameSB;
-        //判断是否过左右边界，可穿越到另一边
-        if (this.drawPosition.x + this.imageSize.x / 2 >= gameW) {
-            this.drawPosition.x = -this.imageSize.x / 2;
-        } else if (this.drawPosition.x + this.imageSize.x / 2 < 0) {
-            this.drawPosition.x = gameW - this.imageSize.x / 2;
+        if (this.status != STATUS_WIN) {
+            //判断是否过刷新线
+            int gameW = SuwakoJumpActivity.DISPLAY_WIDTH;
+            int gameH = SuwakoJumpActivity.DISPLAY_HEIGHT;
+            int gameSB = 0;
+            this.isOverLine = this.drawPosition.y < gameH / 2 + gameSB;
+            //判断是否过左右边界，可穿越到另一边
+            if (this.drawPosition.x + this.imageSize.x / 2 >= gameW) {
+                this.drawPosition.x = -this.imageSize.x / 2;
+            } else if (this.drawPosition.x + this.imageSize.x / 2 < 0) {
+                this.drawPosition.x = gameW - this.imageSize.x / 2;
+            }
+            //判断是否死亡
+            if (this.drawPosition.y > gameH + gameSB) {
+                this.isDead = true;
+            }
+            //判断左右倾斜（重力感应器）
+            if (this.moveStepX <= 0) {
+                this.cutPosition.y = this.imageSize.y;
+            } else {
+                this.cutPosition.y = 0;
+            }
+            this.drawPosition.x += this.moveStepX;
         }
-        //判断是否死亡
-        if (this.drawPosition.y > gameH + gameSB) {
-            this.isDead = true;
-        }
-        //判断左右倾斜（重力感应器）
-        if (this.moveStepX <= 0) {
-            this.cutPosition.y = this.imageSize.y;
-        } else {
-            this.cutPosition.y = 0;
-        }
-        this.drawPosition.x += this.moveStepX;
     }
 
     /*
@@ -111,7 +132,9 @@ public class Suwako extends JSprite {
      * @param sensorX 重力感应器X轴参量
      */
     public void setMoveStepX(float sensorX) {
-        this.moveStepX = -((int) sensorX) * 6;
+        if (this.status != STATUS_WIN) {
+            this.moveStepX = -((int) sensorX) * 6;
+        }
     }
 
     /*
@@ -147,12 +170,17 @@ public class Suwako extends JSprite {
                 return false;
             } else if (boardType.contains("VanishBoard")) {
                 ((VanishBoard) board).vanish();
+            } else if (boardType.contains("FlagBoard")) {
+                this.gameLogic.notifyStageClear();
+                this.setStatus(STATUS_WIN);
+                this.drawPosition.y = boardPos.y - this.drawImage.getHeight();
+                return true;
             }
             //检测板子上的道具
             this.checkItem(board);
             //重新设置主角状态
             this.setStatus(STATUS_UP);
-            this.drawPosition.y = boardPos.y - this.imageSize.y;
+            this.drawPosition.y = boardPos.y - this.drawImage.getHeight();
 //            SoundHelper.play(this.seJump);
             return true;
         } else {
@@ -168,7 +196,7 @@ public class Suwako extends JSprite {
         Rect suwakoRect = this.getRect();
         Rect itemRect = item.getRect();
         if (!this.isUp && suwakoRect.intersect(itemRect)) {
-            item.gainEffect();
+            item.gainEffect(this);
         }
     }
 
@@ -216,7 +244,10 @@ public class Suwako extends JSprite {
                 this.isUp = false;
                 this.isSuperUp = false;
                 break;
-
+            case STATUS_WIN:
+                this.drawImage = this.bmpHashMap.get("suwako_win");
+                this.cutPosition = new Point();
+                break;
         }
     }
 }
