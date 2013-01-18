@@ -2,6 +2,10 @@ package com.raytaylorlin.SuwakoJump.Sprites;
 
 import android.graphics.*;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
+import com.raytaylorlin.SuwakoJump.Sprites.Board.Board;
+import com.raytaylorlin.SuwakoJump.Sprites.Board.BrokenBoard;
+import com.raytaylorlin.SuwakoJump.Sprites.Board.VanishBoard;
+import com.raytaylorlin.SuwakoJump.Sprites.Item.Item;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 //import SuwakoJump.Frame.MainGame;
 //import SuwakoJump.Frame.CanvasPanel;
@@ -54,8 +58,7 @@ public class Suwako extends JSprite {
                     this.isUp = true;
                     if (!this.isOverLine) {
                         if (this.isSuperUp) {
-                            this.drawPosition.y -= FIRST_V * 5 - (this.currentFrameX % (this.sheetSize.x / 2));
-                            this.isSuperUp = false;
+                            this.drawPosition.y -= FIRST_V * 6 - (this.currentFrameX % (this.sheetSize.x / 2));
                         } else {
                             this.drawPosition.y -= FIRST_V - (this.currentFrameX % (this.sheetSize.x / 2));
                         }
@@ -103,10 +106,31 @@ public class Suwako extends JSprite {
         this.drawPosition.x += this.moveStepX;
     }
 
-    public void setSensorX(float sensorX) {
+    /*
+     * 根据重力感应器X轴的值设置水平位移量
+     * @param sensorX 重力感应器X轴参量
+     */
+    public void setMoveStepX(float sensorX) {
         this.moveStepX = -((int) sensorX) * 6;
     }
 
+    /*
+     * 设置超级跳跃（弹簧效果）
+     */
+    public void setSuperUp() {
+        this.isSuperUp = true;
+    }
+
+
+    public void attack(Point point) {
+        //TODO: 攻击
+    }
+
+    /*
+     * 检测落地是否碰到板子
+     * @param board 做碰撞检测的板子
+     * @return 是否碰到板子
+     */
     public boolean checkLanding(Board board) {
         //下降过程中做与板子的碰撞检测
         Point boardPos = board.getPosition();
@@ -117,15 +141,16 @@ public class Suwako extends JSprite {
                 && this.drawPosition.x + this.imageSize.x / 2 + 15 >= boardPos.x
                 && this.drawPosition.x + this.imageSize.x / 2 - 15 <= boardPos.x + boardSize.x) {
             //获取碰撞的板子类型
-            String fullType = board.getClass().getName();
-
-//            String boardType = (fullType.substring(fullType.lastIndexOf(".") + 1)).toString();
-            if (fullType.contains("BrokenBoard")) {
+            String boardType = board.getClass().getName();
+            if (boardType.contains("BrokenBoard")) {
                 ((BrokenBoard) board).setBroken();
                 return false;
-            } else if (fullType.contains("VanishBoard")) {
+            } else if (boardType.contains("VanishBoard")) {
                 ((VanishBoard) board).vanish();
             }
+            //检测板子上的道具
+            this.checkItem(board);
+            //重新设置主角状态
             this.setStatus(STATUS_UP);
             this.drawPosition.y = boardPos.y - this.imageSize.y;
 //            SoundHelper.play(this.seJump);
@@ -135,10 +160,21 @@ public class Suwako extends JSprite {
         }
     }
 
-    public void attack(Point point){
-        //TODO: 攻击
+    private void checkItem(Board board) {
+        Item item = board.getItem();
+        if (item == null) {
+            return;
+        }
+        Rect suwakoRect = this.getRect();
+        Rect itemRect = item.getRect();
+        if (!this.isUp && suwakoRect.intersect(itemRect)) {
+            item.gainEffect();
+        }
     }
 
+    /*
+     * 获取总高度上升的距离
+     */
     public int getDuration() {
         int gameH = SuwakoJumpActivity.DISPLAY_HEIGHT;
         int gameSB = 0;
@@ -153,6 +189,9 @@ public class Suwako extends JSprite {
         return d;
     }
 
+    /*
+     * 获取坠落时间
+     */
     public int getFallingTime() {
         int f = (this.sheetSize.x / 2 - this.currentFrameX) * (FRAME_Y_BUFFER - 1) / 2;
         if (f == 0) {
@@ -161,9 +200,13 @@ public class Suwako extends JSprite {
         return f;
     }
 
+    /*
+     * 设置状态
+     * @param statusIndex 状态编码（枚举值，参见字段定义）
+     */
     private void setStatus(int statusIndex) {
         this.status = statusIndex;
-        switch (statusIndex){
+        switch (statusIndex) {
             case STATUS_UP:
                 this.currentFrameX = 0;
                 this.fallCount = 1;
@@ -171,6 +214,7 @@ public class Suwako extends JSprite {
                 break;
             case STATUS_DOWN:
                 this.isUp = false;
+                this.isSuperUp = false;
                 break;
 
         }

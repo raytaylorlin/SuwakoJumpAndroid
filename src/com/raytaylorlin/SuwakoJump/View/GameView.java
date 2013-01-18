@@ -15,6 +15,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     private Bitmap bmpBackground, bmpScoreBoard,
             bmpSuwako, bmpBoard, bmpGameOverText,
             bmpNumber;
+    private Bitmap bmpItemSpring;
     private HashMap<String, Bitmap> bmpHashMap;
 
     private GameLogic gameLogic;
@@ -42,14 +43,17 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.gameover_text);
         this.bmpNumber = BitmapFactory.decodeResource(getResources(),
                 R.drawable.number);
+        this.bmpItemSpring = BitmapFactory.decodeResource(getResources(),
+                R.drawable.item_spring);
 
         //调整图片尺寸
-        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground, true);
+        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground, false);
         this.bmpScoreBoard = ImageHelper.adjustScaleImage(this.bmpScoreBoard, false);
         this.bmpSuwako = ImageHelper.adjustScaleImage(this.bmpSuwako, false);
         this.bmpBoard = ImageHelper.adjustScaleImage(this.bmpBoard, false);
         this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText, false);
         this.bmpNumber = ImageHelper.adjustScaleImage(this.bmpNumber, false);
+        this.bmpItemSpring = ImageHelper.adjustScaleImage(this.bmpItemSpring, false);
 
         //建立字符串和图片的映射
         this.bmpHashMap = new HashMap<String, Bitmap>();
@@ -59,6 +63,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("board", this.bmpBoard);
         this.bmpHashMap.put("game_over_text", this.bmpGameOverText);
         this.bmpHashMap.put("number", this.bmpNumber);
+        this.bmpHashMap.put("item_spring", this.bmpItemSpring);
     }
 
     @Override
@@ -72,8 +77,6 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         for (JSprite sprite : spritesList) {
             sprite.draw(canvas, this.mainPaint);
         }
-//        canvas.drawBitmap(this.bmpScoreBoard, 0, 0, this.mainPaint);
-
     }
 
     /*

@@ -9,6 +9,9 @@ import com.raytaylorlin.SuwakoJump.Lib.FileHelper;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
 import com.raytaylorlin.SuwakoJump.Lib.RandomHelper;
 import com.raytaylorlin.SuwakoJump.Sprites.*;
+import com.raytaylorlin.SuwakoJump.Sprites.Board.*;
+import com.raytaylorlin.SuwakoJump.Sprites.Item.Item;
+import com.raytaylorlin.SuwakoJump.Sprites.Item.Spring;
 import com.raytaylorlin.SuwakoJump.View.GameView;
 
 import java.util.ArrayList;
@@ -41,13 +44,6 @@ public class GameLogic {
         this.spritesList.clear();
         this.boardsList.clear();
 
-        //初始化板子
-        for (int i = 0; i < 100; i++) {
-            Board newBoard = this.getNewTypeBoard(i);
-            this.boardsList.add(newBoard);
-            this.add(newBoard);
-        }
-
         //初始化suwako
         int suwakoX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5);
         int suwakoY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.8);
@@ -57,24 +53,33 @@ public class GameLogic {
         this.suwako = new Suwako(bmpSuwako,
                 new Point(suwakoX, suwakoY),
                 new Point(suwakoW, suwakoH));
-        this.add(this.suwako);
+
+
+        //初始化板子
+        for (int i = 0; i < 100; i++) {
+            Board newBoard = this.getNewTypeBoard(i);
+            this.boardsList.add(newBoard);
+            this.add(newBoard);
+        }
 
         //初始化游戏结束文字
         this.gameOverText = new JSprite(
                 this.bmpHashMap.get("game_over_text"),
                 new Point(0, SuwakoJumpActivity.DISPLAY_HEIGHT));
-        this.add(this.gameOverText);
 
         this.scoreBoard = new JSprite(
                 this.bmpHashMap.get("score_board"),
                 new Point(0, 0));
-        this.add(this.scoreBoard);
 
         //初始化分数精灵
         Bitmap bmpNumber = this.bmpHashMap.get("number");
         this.countScore = new CountScore(bmpNumber,
                 new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.2917),
                         (int) (bmpNumber.getHeight() * 0.2)));
+
+        this.add(this.gameOverText);
+        this.add(this.suwako);
+        this.add(this.scoreBoard);
         this.add(this.countScore);
     }
 
@@ -84,7 +89,7 @@ public class GameLogic {
             //更新主角逻辑
             this.suwako.update();
             float x = this.gameView.getSensorX();
-            this.suwako.setSensorX(x);
+            this.suwako.setMoveStepX(x);
             if (this.suwako.isDead) {
                 this.notifyGameOver();
             }
@@ -101,7 +106,7 @@ public class GameLogic {
                     this.boardsFallingDown = true;
                 }
             }
-            //所有板子的下降逻辑
+            //执行所有板子的碰撞检测
             boolean fallingUncompleted = false;
             for (int i = this.boardsList.size() - 1; i >= 0; i--) {
                 Board checkBoard = this.boardsList.get(i);
@@ -217,10 +222,13 @@ public class GameLogic {
     private Board getNewTypeBoard(int y) {
         Bitmap bmpBoard = this.bmpHashMap.get("board");
         Board newBoard = null;
+        Item newItem = null;
+        //随机计算板子的位置
         int boardX = RandomHelper.getRandom(
                 SuwakoJumpActivity.DISPLAY_WIDTH - bmpBoard.getWidth());
         int boardY = SuwakoJumpActivity.DISPLAY_HEIGHT - (y + 1) * 80;
 //        int boardY = MainGame.GAME_FIELD_HEIGHT + MainGame.GAME_SCORE_BAR_HEIGHT - (y + 1) * 40;
+
         float boardTypeFloat = RandomHelper.getRandom();
 //        newBoard = new NormalBoard(bmpBoard, new Point(boardX, boardY));
         if (boardTypeFloat < 0.1) {
@@ -233,7 +241,20 @@ public class GameLogic {
         } else {
             newBoard = new NormalBoard(bmpBoard, new Point(boardX, boardY));
         }
+
+        //设置道具
+        float itemTypeFloat = RandomHelper.getRandom();
+        Point bPos = newBoard.getPosition();
+        Point bSize = newBoard.getSize();
+        Bitmap bmpItemSpring = this.bmpHashMap.get("item_spring");
+        newItem = new Spring(this.suwako, bmpItemSpring,
+                new Point(RandomHelper.getRandom(bPos.x,
+                        bPos.x + bSize.x - bmpItemSpring.getWidth()),
+                        bPos.y - bmpItemSpring.getHeight()));
+        newBoard.setItem(newItem);
+
         return newBoard;
+
     }
 
     public ArrayList<JSprite> getSpritesList() {
