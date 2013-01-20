@@ -27,7 +27,7 @@ public class ScoreBoard extends JSprite {
             canvas.drawBitmap(this.drawImage, 0, 0, paint);
             Paint.FontMetrics fm = paint.getFontMetrics();
             int textOffset = (int) (fm.descent - fm.ascent);
-            String displayText = "SCORE:" + this.showNumber;
+            String displayText = "SCORE:  " + this.showNumber;
             canvas.drawText(displayText,
                     (int) (this.imageSize.x * 0.0208),
                     (int) (this.imageSize.y * 0.05) + textOffset, paint);

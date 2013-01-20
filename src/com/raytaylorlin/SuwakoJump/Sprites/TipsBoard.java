@@ -2,10 +2,19 @@ package com.raytaylorlin.SuwakoJump.Sprites;
 
 import android.graphics.*;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
+import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 public class TipsBoard extends JSprite {
     public TipsBoard(Bitmap bitmap, Point drawPosition) {
         super(bitmap, drawPosition);
+    }
+
+    @Override
+    public void update(){
+        if (this.drawPosition.y <
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.2412)) {
+            this.drawPosition.y += this.imageSize.y / 10;
+        }
     }
 
     public Rect getRect() {

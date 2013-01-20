@@ -36,6 +36,7 @@ public class GameLogic {
     private int stageNum = 1;
     private boolean isGameOver, isShowingTips = true, isShowingResult;
     private boolean boardsFallingDown = false;
+    private Suwako suwako1;
 
     public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap,
                      int stageNum) {
@@ -73,6 +74,7 @@ public class GameLogic {
                 new Point(suwakoX, suwakoY),
                 new Point(suwakoW, suwakoH), this);
 
+
         //初始化游戏结束文字
         this.gameOverText = new JSprite(
                 this.bmpHashMap.get("game_over_text"),
@@ -87,20 +89,14 @@ public class GameLogic {
         this.tipsBoard = new TipsBoard(
                 this.bmpHashMap.get("tips_board" + this.stageNum),
                 new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
-                        (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.2412)));
+                        -SuwakoJumpActivity.DISPLAY_HEIGHT / 2));
 
 
-        //初始化分数精灵
-        Bitmap bmpNumber = this.bmpHashMap.get("number");
-//        this.countScore = new ScoreBoard(bmpNumber,
-//                new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.2917),
-//                        (int) (bmpNumber.getHeight() * 0.2)));
-
+        //添加精灵
         this.add(this.gameOverText);
         this.add(this.suwako);
         this.add(this.scoreBoard);
         this.add(this.tipsBoard);
-//        this.add(this.countScore);
     }
 
     public void update() {
@@ -154,12 +150,15 @@ public class GameLogic {
             if (this.gameOverText.getPosition().y > 0) {
                 this.gameOverText.getPosition().y -= 40;
             } else {
-                this.highScoreSprite.setVisible(true);
-                this.resultScoreSprite.setVisible(true);
+//                this.highScoreSprite.setVisible(true);
+//                this.resultScoreSprite.setVisible(true);
             }
         }
         //更新显示分数
         this.scoreBoard.update();
+        if (this.isShowingTips) {
+            this.tipsBoard.update();
+        }
         if (this.isShowingResult) {
             this.resultBoard.update();
         }
@@ -184,7 +183,7 @@ public class GameLogic {
                 this.bmpHashMap.get("star_level"),
                 new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
                         -SuwakoJumpActivity.DISPLAY_HEIGHT / 2),
-                this.gameScore, this.endTime-this.startTime);
+                this.gameScore, this.endTime - this.startTime);
         this.add(this.resultBoard);
     }
 

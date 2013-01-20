@@ -159,8 +159,8 @@ public class Suwako extends JSprite {
         Point boardPos = board.getPosition();
         Point boardSize = board.getSize();
         if (!this.isUp
-                && this.drawPosition.y + this.imageSize.y >= boardPos.y - boardSize.y * 1.8
-                && this.drawPosition.y + this.imageSize.y <= boardPos.y + boardSize.y * 1.8
+                && this.drawPosition.y + this.imageSize.y >= boardPos.y - boardSize.y * 1.3
+                && this.drawPosition.y + this.imageSize.y <= boardPos.y + boardSize.y * 1.3
                 && this.drawPosition.x + this.imageSize.x * 0.75 >= boardPos.x
                 && this.drawPosition.x + this.imageSize.x * 0.25 <= boardPos.x + boardSize.x) {
             //获取碰撞的板子类型
@@ -170,6 +170,7 @@ public class Suwako extends JSprite {
                 return false;
             } else if (boardType.contains("VanishBoard")) {
                 ((VanishBoard) board).vanish();
+                this.checkItem(board);
             } else if (boardType.contains("FlagBoard")) {
                 this.gameLogic.notifyStageClear();
                 this.setStatus(STATUS_WIN);

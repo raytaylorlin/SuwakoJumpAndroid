@@ -93,10 +93,8 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
         soundPool.play(soundPoolMap.get(sound), volume, volume, 1, 0, 1f);//播放
     }
 
-
     public void onDraw(Canvas canvas) {
         canvas.drawBitmap(this.bmpBackground, 0, 0, mainPaint);
-//        this.btnStartGame.draw(canvas, mainPaint);
     }
 
     /*

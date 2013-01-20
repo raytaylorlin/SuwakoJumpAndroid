@@ -16,9 +16,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     //背景图片
     private Bitmap bmpBackground, bmpScoreBoard,
             bmpSuwakoJump, bmpSuwakoWin, bmpSuwakoFly,
-            bmpGameOverText, bmpTipsBoard1,
-            bmpResultBoard;
-    private Bitmap bmpItemSpring,bmpStarLevel;
+            bmpGameOverText, bmpResultBoard;
+    private Bitmap bmpTipsBoard1, bmpTipsBoard2,
+            bmpTipsBoard3, bmpTipsBoard4, bmpTipsBoard5;
+    private Bitmap bmpItemSpring, bmpStarLevel;
     private HashMap<String, Bitmap> bmpHashMap;
 
     private GameLogic gameLogic;
@@ -51,7 +52,14 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.item_spring);
         this.bmpTipsBoard1 = BitmapFactory.decodeResource(getResources(),
                 R.drawable.tips_board1);
-
+        this.bmpTipsBoard2 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.tips_board2);
+        this.bmpTipsBoard3 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.tips_board3);
+        this.bmpTipsBoard4 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.tips_board4);
+        this.bmpTipsBoard5 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.tips_board5);
         this.bmpResultBoard = BitmapFactory.decodeResource(getResources(),
                 R.drawable.result_board);
         this.bmpStarLevel = BitmapFactory.decodeResource(getResources(),
@@ -83,6 +91,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText);
         this.bmpItemSpring = ImageHelper.adjustScaleImage(this.bmpItemSpring);
         this.bmpTipsBoard1 = ImageHelper.adjustScaleImage(this.bmpTipsBoard1);
+        this.bmpTipsBoard2 = ImageHelper.adjustScaleImage(this.bmpTipsBoard2);
+        this.bmpTipsBoard3 = ImageHelper.adjustScaleImage(this.bmpTipsBoard3);
+        this.bmpTipsBoard4 = ImageHelper.adjustScaleImage(this.bmpTipsBoard4);
+        this.bmpTipsBoard5 = ImageHelper.adjustScaleImage(this.bmpTipsBoard5);
         this.bmpResultBoard = ImageHelper.adjustScaleImage(this.bmpResultBoard);
         this.bmpStarLevel = ImageHelper.adjustScaleImage(this.bmpStarLevel);
 
@@ -96,6 +108,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("game_over_text", this.bmpGameOverText);
         this.bmpHashMap.put("item_spring", this.bmpItemSpring);
         this.bmpHashMap.put("tips_board1", this.bmpTipsBoard1);
+        this.bmpHashMap.put("tips_board2", this.bmpTipsBoard2);
+        this.bmpHashMap.put("tips_board3", this.bmpTipsBoard3);
+        this.bmpHashMap.put("tips_board4", this.bmpTipsBoard4);
+        this.bmpHashMap.put("tips_board5", this.bmpTipsBoard5);
         this.bmpHashMap.put("result_board", this.bmpResultBoard);
         this.bmpHashMap.put("star_level", this.bmpStarLevel);
     }
@@ -152,7 +168,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
             if (this.gameLogic.isGameOver()) {
                 Message msg = new Message();
                 msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
-                msg.arg2 = 1;
+                msg.arg2 = this.gameLogic.getStageNum();
 
                 this.mainActivity.myHandler.sendMessage(msg);
 //                this.mainActivity.myHandler.sendEmptyMessage(

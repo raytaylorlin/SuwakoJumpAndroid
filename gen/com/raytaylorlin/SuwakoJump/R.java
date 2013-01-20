@@ -33,7 +33,11 @@ public final class R {
         public static final int suwako_jump=0x7f020013;
         public static final int suwako_win=0x7f020014;
         public static final int tips_board1=0x7f020015;
-        public static final int welcome_view_background=0x7f020016;
+        public static final int tips_board2=0x7f020016;
+        public static final int tips_board3=0x7f020017;
+        public static final int tips_board4=0x7f020018;
+        public static final int tips_board5=0x7f020019;
+        public static final int welcome_view_background=0x7f02001a;
     }
     public static final class layout {
         public static final int main=0x7f030000;

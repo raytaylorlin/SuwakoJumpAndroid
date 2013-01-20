@@ -58,7 +58,7 @@ public class SuwakoJumpActivity extends Activity {
 //                    _this.currentView.update();
                     break;
                 case SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW:
-                    gameView = new GameView(_this, 1);
+                    gameView = new GameView(_this, msg.arg2);
                     _this.changeView(gameView);
                     break;
             }
