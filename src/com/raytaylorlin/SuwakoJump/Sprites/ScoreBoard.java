@@ -1,14 +1,12 @@
 package com.raytaylorlin.SuwakoJump.Sprites;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.*;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
+import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 import java.util.ArrayList;
 
-public class CountScore extends JSprite {
+public class ScoreBoard extends JSprite {
     private static Point drawInitSize = new Point(16, 24);
     private static Point drawInitPoint = new Point(100, 7);
 
@@ -17,7 +15,7 @@ public class CountScore extends JSprite {
     private int realNumber, showNumber;
     private boolean isVisible = true;
 
-    public CountScore(Bitmap image, Point drawPosition) {
+    public ScoreBoard(Bitmap image, Point drawPosition) {
         super(image, drawPosition);
         drawInitPoint = drawPosition;
         this.scoreNumberImage = image;
@@ -26,9 +24,17 @@ public class CountScore extends JSprite {
 
     public void draw(Canvas canvas, Paint paint) {
         if (this.isVisible) {
-            for (int i = 0; i < this.numberList.size(); i++) {
-                this.numberList.get(i).draw(canvas, paint);
-            }
+            canvas.drawBitmap(this.drawImage, 0, 0, paint);
+            Paint.FontMetrics fm = paint.getFontMetrics();
+            int textOffset = (int) (fm.descent - fm.ascent);
+            String displayText = "SCORE:" + this.showNumber;
+            canvas.drawText(displayText,
+                    (int) (this.imageSize.x * 0.0208),
+                    (int) (this.imageSize.y * 0.05) + textOffset, paint);
+//            for (int i = 0; i < this.numberList.size(); i++) {
+//                this.numberList.get(i).draw(canvas, paint);
+//            }
+
         }
     }
 

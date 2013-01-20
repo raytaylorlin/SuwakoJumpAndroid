@@ -7,7 +7,7 @@ public class JSprite {
     protected Bitmap drawImage;
     protected Point drawPosition, cutPosition;
     protected Point sheetSize, imageSize;
-    protected boolean toDisposed;
+    protected boolean toDisposed, isVisible = true;
 
     public JSprite(Bitmap image, Point drawPosition) {
         this(image, drawPosition, new Point(image.getWidth(), image.getHeight()),
@@ -27,8 +27,10 @@ public class JSprite {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        canvas.drawBitmap(this.drawImage,
-                this.drawPosition.x, this.drawPosition.y, paint);
+        if (this.isVisible) {
+            canvas.drawBitmap(this.drawImage,
+                    this.drawPosition.x, this.drawPosition.y, paint);
+        }
     }
 
     public void update() {
@@ -51,6 +53,10 @@ public class JSprite {
 
     public Point getSize() {
         return this.imageSize;
+    }
+
+    public void hide() {
+        this.isVisible = false;
     }
 
     public boolean isToDisposed() {

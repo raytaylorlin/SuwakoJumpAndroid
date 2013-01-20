@@ -2,6 +2,7 @@ package com.raytaylorlin.SuwakoJump.View;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
@@ -22,8 +23,15 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
         this.mainActivity = mainActivity;
         //初始化重绘线程
         this.tutorialThread = new TutorialThread(this.getHolder(), this);
+        //加载画笔和字体资源
         this.mainPaint = new Paint();
-        //当前加载的是那么界面
+        this.mainPaint.setAntiAlias(true);
+        Typeface typeFace = Typeface.createFromAsset(mainActivity.getAssets(),
+                "fonts/Kristen.ttf");
+        this.mainPaint.setTypeface(typeFace);
+        this.mainPaint.setTextSize((float)(30 * SuwakoJumpActivity.X_SCALE_FACTOR));
+
+
         this.initBitmap();
         this.initSprite();
     }
@@ -76,7 +84,7 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
         }
     }
 
-    public int getViewIndex(){
+    public int getViewIndex() {
         return this.viewIndex;
     }
 }

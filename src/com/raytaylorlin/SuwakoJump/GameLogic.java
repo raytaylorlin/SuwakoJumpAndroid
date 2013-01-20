@@ -5,13 +5,11 @@ package com.raytaylorlin.SuwakoJump;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.Rect;
 import com.raytaylorlin.SuwakoJump.Lib.FileHelper;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
-import com.raytaylorlin.SuwakoJump.Lib.RandomHelper;
 import com.raytaylorlin.SuwakoJump.Sprites.*;
 import com.raytaylorlin.SuwakoJump.Sprites.Board.*;
-import com.raytaylorlin.SuwakoJump.Sprites.Item.Item;
-import com.raytaylorlin.SuwakoJump.Sprites.Item.Spring;
 import com.raytaylorlin.SuwakoJump.View.GameView;
 
 import java.util.ArrayList;
@@ -26,12 +24,14 @@ public class GameLogic {
     private ArrayList<Board> boardsList = new ArrayList<Board>();
     private StageMap stageMap;
 
-    private JSprite scoreBoard, gameOverText;
-    private CountScore countScore, resultScoreSprite, highScoreSprite;
+    private JSprite gameOverText;
+    private TipsBoard tipsBoard;
+    private ScoreBoard scoreBoard, resultScoreSprite, highScoreSprite;
     private Suwako suwako;
 
     private int gameScore = 0;
-    private boolean isGameOver = false;
+    private int stageNum = 1;
+    private boolean isGameOver, isShowingTips = true;
     private boolean boardsFallingDown = false;
 
     public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap) {
@@ -50,82 +50,95 @@ public class GameLogic {
         this.spritesList.clear();
         this.boardsList.clear();
 
-        //初始化suwako
-        int suwakoX = (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5);
-        int suwakoY = (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.8);
-        int suwakoW = this.bmpHashMap.get("suwako_jump").getWidth() / 20;
-        int suwakoH = this.bmpHashMap.get("suwako_jump").getHeight() / 2;
-        this.suwako = new Suwako(this.bmpHashMap,
-                new Point(suwakoX, suwakoY),
-                new Point(suwakoW, suwakoH), this);
-
         //初始化板子
-        this.boardsList = StageMap.getStageMap(1);
+        this.boardsList = StageMap.getStageMap(this.stageNum);
         for (Board board : this.boardsList) {
             this.add(board);
         }
+
+        //初始化suwako
+        Point boardPos = this.boardsList.get(0).getPosition();
+        Point boardSize = this.boardsList.get(0).getSize();
+        int suwakoW = this.bmpHashMap.get("suwako_jump").getWidth() / 20;
+        int suwakoH = this.bmpHashMap.get("suwako_jump").getHeight() / 2;
+        int suwakoX = boardPos.x + (boardPos.x - suwakoW) / 2;
+        int suwakoY = boardPos.y - suwakoH;
+
+        this.suwako = new Suwako(this.bmpHashMap,
+                new Point(suwakoX, suwakoY),
+                new Point(suwakoW, suwakoH), this);
 
         //初始化游戏结束文字
         this.gameOverText = new JSprite(
                 this.bmpHashMap.get("game_over_text"),
                 new Point(0, SuwakoJumpActivity.DISPLAY_HEIGHT));
 
-        this.scoreBoard = new JSprite(
+        //初始化分数板
+        this.scoreBoard = new ScoreBoard(
                 this.bmpHashMap.get("score_board"),
                 new Point(0, 0));
 
+        //初始化提示板
+        this.tipsBoard = new TipsBoard(
+                this.bmpHashMap.get("tips" + this.stageNum),
+                new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
+                        (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.2412)));
+
         //初始化分数精灵
         Bitmap bmpNumber = this.bmpHashMap.get("number");
-        this.countScore = new CountScore(bmpNumber,
-                new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.2917),
-                        (int) (bmpNumber.getHeight() * 0.2)));
+//        this.countScore = new ScoreBoard(bmpNumber,
+//                new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.2917),
+//                        (int) (bmpNumber.getHeight() * 0.2)));
 
         this.add(this.gameOverText);
         this.add(this.suwako);
         this.add(this.scoreBoard);
-        this.add(this.countScore);
+        this.add(this.tipsBoard);
+//        this.add(this.countScore);
     }
 
     public void update() {
         //游戏未结束的时候
         if (!this.isGameOver) {
-            //更新主角逻辑
-            this.suwako.update();
-            float x = this.gameView.getSensorX();
-            this.suwako.setMoveStepX(x);
-            if (this.suwako.isDead) {
-                this.notifyGameOver();
-            }
-            //主角超过中线的情况
-            if (this.suwako.isOverLine && !this.boardsFallingDown) {
-                //计算得分
-                int increaseScore = this.suwako.getDuration() / 10 * 10;
-                this.gameScore += increaseScore;
-                this.countScore.increaseScore(increaseScore);
-                //设置所有板子下降
-                for (int i = 0; i < this.boardsList.size(); i++) {
+            if (!this.isShowingTips) {
+                //更新主角逻辑
+                this.suwako.update();
+                float x = this.gameView.getSensorX();
+                this.suwako.setMoveStepX(x);
+                if (this.suwako.isDead) {
+                    this.notifyGameOver();
+                }
+                //主角超过中线的情况
+                if (this.suwako.isOverLine && !this.boardsFallingDown) {
+                    //计算得分
+                    int increaseScore = this.suwako.getDuration() / 10 * 10;
+                    this.gameScore += increaseScore;
+                    this.scoreBoard.increaseScore(increaseScore);
+                    //设置所有板子下降
+                    for (int i = 0; i < this.boardsList.size(); i++) {
+                        Board checkBoard = this.boardsList.get(i);
+                        checkBoard.setFallingDown(increaseScore, this.suwako.getFallingTime());
+                        this.boardsFallingDown = true;
+                    }
+                }
+                //执行所有板子的碰撞检测
+                boolean fallingUncompleted = false;
+                for (int i = this.boardsList.size() - 1; i >= 0; i--) {
                     Board checkBoard = this.boardsList.get(i);
-                    checkBoard.setFallingDown(increaseScore, this.suwako.getFallingTime());
-                    this.boardsFallingDown = true;
+                    checkBoard.update();
+                    //检测是否所有板子都下降完毕
+                    if (this.boardsFallingDown) {
+                        fallingUncompleted |= checkBoard.isDownMoving;
+                    } else {
+                        this.suwako.checkLanding(checkBoard);
+                    }
                 }
-            }
-            //执行所有板子的碰撞检测
-            boolean fallingUncompleted = false;
-            for (int i = this.boardsList.size() - 1; i >= 0; i--) {
-                Board checkBoard = this.boardsList.get(i);
-                checkBoard.update();
-                //检测是否所有板子都下降完毕
-                if (this.boardsFallingDown) {
-                    fallingUncompleted |= checkBoard.isDownMoving;
-                } else {
-                    this.suwako.checkLanding(checkBoard);
+                //板子下降完毕，则通知主角继续运动
+                if (this.boardsFallingDown && !fallingUncompleted) {
+                    this.suwako.isOverLine = false;
+                    this.suwako.currentFrameX = 20 / 2; //20 == this.suwako.sheetSize.x
+                    this.boardsFallingDown = false;
                 }
-            }
-            //板子下降完毕，则通知主角继续运动
-            if (this.boardsFallingDown && !fallingUncompleted) {
-                this.suwako.isOverLine = false;
-                this.suwako.currentFrameX = 20 / 2; //20 == this.suwako.sheetSize.x
-                this.boardsFallingDown = false;
             }
         } else {
             //游戏结束逻辑
@@ -140,7 +153,7 @@ public class GameLogic {
             }
         }
         //更新显示分数
-        this.countScore.update();
+        this.scoreBoard.update();
         //释放所有待清除的精灵的内存
         this.flushSpriteList();
     }
@@ -165,7 +178,7 @@ public class GameLogic {
             this.boardsList.get(i).isUpMoving = true;
         }
         //显示得分和最高分
-        this.showResultScore();
+//        this.showResultScore();
     }
 
     /*
@@ -189,12 +202,12 @@ public class GameLogic {
         Bitmap bmpNumber = this.bmpHashMap.get("number");
         double xScale = SuwakoJumpActivity.X_SCALE_FACTOR;
         double yScale = SuwakoJumpActivity.Y_SCALE_FACTOR;
-        this.resultScoreSprite = new CountScore(bmpNumber,
+        this.resultScoreSprite = new ScoreBoard(bmpNumber,
                 new Point((int) (480 * 0.6 * xScale),
                         (int) (800 * 0.285 * yScale)));
         this.resultScoreSprite.setFixedNumber(this.gameScore);
         this.resultScoreSprite.setVisible(false);
-        this.highScoreSprite = new CountScore(bmpNumber,
+        this.highScoreSprite = new ScoreBoard(bmpNumber,
                 new Point((int) (480 * 0.6 * xScale),
                         (int) (800 * 0.34 * yScale)));
         this.highScoreSprite.setFixedNumber(highScore);
@@ -213,10 +226,27 @@ public class GameLogic {
 
     /*
      * 查询游戏是否结束
-     * @return 游戏是否接受
+     * @return 游戏是否结束
      */
     public boolean isGameOver() {
         return this.isGameOver;
+    }
+
+    /*
+    * 查询游戏是否正在展示TIPS板
+    * @return 游戏是否正在展示TIPS板
+    */
+    public boolean isShowingTips() {
+        return this.isShowingTips;
+    }
+
+    public void hideTipsBoard() {
+        this.tipsBoard.hide();
+        this.isShowingTips = false;
+    }
+
+    public Rect getTipsBoardButtonRect() {
+        return this.tipsBoard.getRect();
     }
 
     /*

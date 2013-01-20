@@ -3,6 +3,7 @@ package com.raytaylorlin.SuwakoJump;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.*;
 import com.raytaylorlin.SuwakoJump.View.*;
 
@@ -77,6 +79,16 @@ public class SuwakoJumpActivity extends Activity {
         DISPLAY_HEIGHT = dm.heightPixels;
         X_SCALE_FACTOR = DISPLAY_WIDTH / 480.0;
         Y_SCALE_FACTOR = DISPLAY_HEIGHT / 800.0;
+
+        try{
+
+        }
+        catch (Exception e){
+            Log.e("error",e.getMessage());
+            e.printStackTrace();
+        }
+//        tv.setTypeface (face);
+//        this.mainPaint.setTypeface(face);
 
         this.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor sensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

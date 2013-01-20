@@ -25,12 +25,13 @@ public final class R {
         public static final int item_spring=0x7f02000b;
         public static final int loading_background=0x7f02000c;
         public static final int number=0x7f02000d;
-        public static final int score_bar=0x7f02000e;
+        public static final int score_board=0x7f02000e;
         public static final int start_game_button=0x7f02000f;
         public static final int suwako_fly=0x7f020010;
         public static final int suwako_jump=0x7f020011;
         public static final int suwako_win=0x7f020012;
-        public static final int welcome_view_background=0x7f020013;
+        public static final int tips1=0x7f020013;
+        public static final int welcome_view_background=0x7f020014;
     }
     public static final class layout {
         public static final int main=0x7f030000;

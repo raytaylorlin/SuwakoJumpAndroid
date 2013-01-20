@@ -37,7 +37,7 @@ public class Suwako extends JSprite {
     private int status = STATUS_UP;
     private int moveStepX = 0;
     private boolean isUp;
-    private boolean isSuperUp = true;
+    private boolean isSuperUp = false;
     private int frameYBuffer = 0;
     private int fallCount = 1;
 
@@ -159,10 +159,10 @@ public class Suwako extends JSprite {
         Point boardPos = board.getPosition();
         Point boardSize = board.getSize();
         if (!this.isUp
-                && this.drawPosition.y + this.imageSize.y - 34 >= boardPos.y - boardSize.y
-                && this.drawPosition.y + this.imageSize.y - 34 <= boardPos.y + boardSize.y * 1.5
-                && this.drawPosition.x + this.imageSize.x / 2 + 15 >= boardPos.x
-                && this.drawPosition.x + this.imageSize.x / 2 - 15 <= boardPos.x + boardSize.x) {
+                && this.drawPosition.y + this.imageSize.y >= boardPos.y - boardSize.y * 1.8
+                && this.drawPosition.y + this.imageSize.y <= boardPos.y + boardSize.y * 1.8
+                && this.drawPosition.x + this.imageSize.x * 0.75 >= boardPos.x
+                && this.drawPosition.x + this.imageSize.x * 0.25 <= boardPos.x + boardSize.x) {
             //获取碰撞的板子类型
             String boardType = board.getClass().getName();
             if (boardType.contains("BrokenBoard")) {
@@ -180,7 +180,7 @@ public class Suwako extends JSprite {
             this.checkItem(board);
             //重新设置主角状态
             this.setStatus(STATUS_UP);
-            this.drawPosition.y = boardPos.y - this.drawImage.getHeight();
+            this.drawPosition.y = boardPos.y - this.imageSize.y;
 //            SoundHelper.play(this.seJump);
             return true;
         } else {

@@ -15,7 +15,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     //背景图片
     private Bitmap bmpBackground, bmpScoreBoard,
             bmpSuwakoJump, bmpSuwakoWin, bmpSuwakoFly,
-            bmpGameOverText, bmpNumber;
+            bmpGameOverText, bmpTips1;
     private Bitmap bmpItemSpring;
     private HashMap<String, Bitmap> bmpHashMap;
 
@@ -36,7 +36,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpBackground = BitmapFactory.decodeResource(getResources(),
                 R.drawable.game_view_background);
         this.bmpScoreBoard = BitmapFactory.decodeResource(getResources(),
-                R.drawable.score_bar);
+                R.drawable.score_board);
         this.bmpSuwakoJump = BitmapFactory.decodeResource(getResources(),
                 R.drawable.suwako_jump);
         this.bmpSuwakoWin = BitmapFactory.decodeResource(getResources(),
@@ -45,10 +45,12 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.suwako_fly);
         this.bmpGameOverText = BitmapFactory.decodeResource(getResources(),
                 R.drawable.gameover_text);
-        this.bmpNumber = BitmapFactory.decodeResource(getResources(),
-                R.drawable.number);
+//        this.bmpNumber = BitmapFactory.decodeResource(getResources(),
+//                R.drawable.number);
         this.bmpItemSpring = BitmapFactory.decodeResource(getResources(),
                 R.drawable.item_spring);
+        this.bmpTips1 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.tips1);
 
         //加载板子资源
         Bitmap bmpBoardNormal = BitmapFactory.decodeResource(getResources(),
@@ -74,8 +76,9 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpSuwakoWin = ImageHelper.adjustScaleImage(this.bmpSuwakoWin);
         this.bmpSuwakoFly = ImageHelper.adjustScaleImage(this.bmpSuwakoFly);
         this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText);
-        this.bmpNumber = ImageHelper.adjustScaleImage(this.bmpNumber);
+//        this.bmpNumber = ImageHelper.adjustScaleImage(this.bmpNumber);
         this.bmpItemSpring = ImageHelper.adjustScaleImage(this.bmpItemSpring);
+        this.bmpTips1 = ImageHelper.adjustScaleImage(this.bmpTips1);
 
         //建立字符串和图片的映射
         this.bmpHashMap.put("background", this.bmpBackground);
@@ -85,8 +88,9 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("suwako_win", this.bmpSuwakoWin);
         this.bmpHashMap.put("suwako_fly", this.bmpSuwakoFly);
         this.bmpHashMap.put("game_over_text", this.bmpGameOverText);
-        this.bmpHashMap.put("number", this.bmpNumber);
+//        this.bmpHashMap.put("number", this.bmpNumber);
         this.bmpHashMap.put("item_spring", this.bmpItemSpring);
+        this.bmpHashMap.put("tips1", this.bmpTips1);
     }
 
     @Override
@@ -108,9 +112,15 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         //屏幕被按下
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            Rect btnStartGameRect = this.btnStartGame.getRect();
+            Rect btnOkRect = this.gameLogic.getTipsBoardButtonRect();
             double x = event.getX();
             double y = event.getY();
+            if(this.gameLogic.isShowingTips()){
+                if (x > btnOkRect.left && x < btnOkRect.right
+                        && y > btnOkRect.top && y < btnOkRect.bottom) {
+                    this.gameLogic.hideTipsBoard();
+                }
+            }
             if (this.gameLogic.isGameOver()) {
                 this.mainActivity.myHandler.sendEmptyMessage(
                         SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
