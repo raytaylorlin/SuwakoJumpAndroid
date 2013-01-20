@@ -73,7 +73,7 @@ public class StageMap {
         int TOTAL_NUM;
         switch (stageNum) {
             case 1:
-                TOTAL_NUM = 50;
+                TOTAL_NUM = 5;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
 //                    int by_offset = RandomHelper.getRandom(BASE_INTERVAL);

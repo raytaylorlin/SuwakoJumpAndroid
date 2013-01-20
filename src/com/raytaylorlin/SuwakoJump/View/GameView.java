@@ -1,6 +1,7 @@
 package com.raytaylorlin.SuwakoJump.View;
 
 import android.graphics.*;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import com.raytaylorlin.SuwakoJump.*;
@@ -15,15 +16,16 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     //背景图片
     private Bitmap bmpBackground, bmpScoreBoard,
             bmpSuwakoJump, bmpSuwakoWin, bmpSuwakoFly,
-            bmpGameOverText, bmpTips1;
-    private Bitmap bmpItemSpring;
+            bmpGameOverText, bmpTipsBoard1,
+            bmpResultBoard;
+    private Bitmap bmpItemSpring,bmpStarLevel;
     private HashMap<String, Bitmap> bmpHashMap;
 
     private GameLogic gameLogic;
 
-    public GameView(SuwakoJumpActivity mainActivity) {
+    public GameView(SuwakoJumpActivity mainActivity, int stageNum) {
         super(mainActivity);
-        this.gameLogic = new GameLogic(this, this.bmpHashMap);
+        this.gameLogic = new GameLogic(this, this.bmpHashMap, stageNum);
         TutorialThread gameThread = new GameViewThread(getHolder(), this);
         gameThread.start();
         this.viewIndex = SuwakoJumpActivity.GAME_VIEW_INDEX;
@@ -45,12 +47,15 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.suwako_fly);
         this.bmpGameOverText = BitmapFactory.decodeResource(getResources(),
                 R.drawable.gameover_text);
-//        this.bmpNumber = BitmapFactory.decodeResource(getResources(),
-//                R.drawable.number);
         this.bmpItemSpring = BitmapFactory.decodeResource(getResources(),
                 R.drawable.item_spring);
-        this.bmpTips1 = BitmapFactory.decodeResource(getResources(),
-                R.drawable.tips1);
+        this.bmpTipsBoard1 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.tips_board1);
+
+        this.bmpResultBoard = BitmapFactory.decodeResource(getResources(),
+                R.drawable.result_board);
+        this.bmpStarLevel = BitmapFactory.decodeResource(getResources(),
+                R.drawable.star_level);
 
         //加载板子资源
         Bitmap bmpBoardNormal = BitmapFactory.decodeResource(getResources(),
@@ -76,9 +81,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpSuwakoWin = ImageHelper.adjustScaleImage(this.bmpSuwakoWin);
         this.bmpSuwakoFly = ImageHelper.adjustScaleImage(this.bmpSuwakoFly);
         this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText);
-//        this.bmpNumber = ImageHelper.adjustScaleImage(this.bmpNumber);
         this.bmpItemSpring = ImageHelper.adjustScaleImage(this.bmpItemSpring);
-        this.bmpTips1 = ImageHelper.adjustScaleImage(this.bmpTips1);
+        this.bmpTipsBoard1 = ImageHelper.adjustScaleImage(this.bmpTipsBoard1);
+        this.bmpResultBoard = ImageHelper.adjustScaleImage(this.bmpResultBoard);
+        this.bmpStarLevel = ImageHelper.adjustScaleImage(this.bmpStarLevel);
 
         //建立字符串和图片的映射
         this.bmpHashMap.put("background", this.bmpBackground);
@@ -88,9 +94,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("suwako_win", this.bmpSuwakoWin);
         this.bmpHashMap.put("suwako_fly", this.bmpSuwakoFly);
         this.bmpHashMap.put("game_over_text", this.bmpGameOverText);
-//        this.bmpHashMap.put("number", this.bmpNumber);
         this.bmpHashMap.put("item_spring", this.bmpItemSpring);
-        this.bmpHashMap.put("tips1", this.bmpTips1);
+        this.bmpHashMap.put("tips_board1", this.bmpTipsBoard1);
+        this.bmpHashMap.put("result_board", this.bmpResultBoard);
+        this.bmpHashMap.put("star_level", this.bmpStarLevel);
     }
 
     @Override
@@ -112,18 +119,44 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         //屏幕被按下
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            Rect btnOkRect = this.gameLogic.getTipsBoardButtonRect();
             double x = event.getX();
             double y = event.getY();
-            if(this.gameLogic.isShowingTips()){
+            //TIPS板展示阶段的触摸屏事件检测
+            if (this.gameLogic.isShowingTips()) {
+                Rect btnOkRect = this.gameLogic.getTipsBoardButtonRect();
                 if (x > btnOkRect.left && x < btnOkRect.right
                         && y > btnOkRect.top && y < btnOkRect.bottom) {
                     this.gameLogic.hideTipsBoard();
                 }
+            } else if (this.gameLogic.isShowingResult()) {
+                //显示分数结果阶段的触摸屏事件检测
+                ArrayList<Rect> btnRectList = this.gameLogic.getResultBoardButtonRect();
+                Rect btnRestartRect = btnRectList.get(0);
+                Rect btnNextStageRect = btnRectList.get(1);
+                //按下Restart按钮事件
+                if (x > btnRestartRect.left && x < btnRestartRect.right
+                        && y > btnRestartRect.top && y < btnRestartRect.bottom) {
+                    Message msg = new Message();
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                    msg.arg2 = this.gameLogic.getStageNum();
+                    this.mainActivity.myHandler.sendMessage(msg);
+                } else if (x > btnNextStageRect.left && x < btnNextStageRect.right
+                        && y > btnNextStageRect.top && y < btnNextStageRect.bottom) {
+                    Message msg = new Message();
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                    msg.arg2 = this.gameLogic.getStageNum() + 1;
+                    this.mainActivity.myHandler.sendMessage(msg);
+                }
             }
+            //
             if (this.gameLogic.isGameOver()) {
-                this.mainActivity.myHandler.sendEmptyMessage(
-                        SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
+                Message msg = new Message();
+                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                msg.arg2 = 1;
+
+                this.mainActivity.myHandler.sendMessage(msg);
+//                this.mainActivity.myHandler.sendEmptyMessage(
+//                        SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
             } else {
                 this.gameLogic.setSuwakoAttack(new Point((int) x, (int) y));
             }

@@ -13,6 +13,7 @@ import com.raytaylorlin.SuwakoJump.Sprites.Board.*;
 import com.raytaylorlin.SuwakoJump.View.GameView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -26,17 +27,21 @@ public class GameLogic {
 
     private JSprite gameOverText;
     private TipsBoard tipsBoard;
+    private ResultBoard resultBoard;
     private ScoreBoard scoreBoard, resultScoreSprite, highScoreSprite;
     private Suwako suwako;
 
+    private long startTime, endTime;
     private int gameScore = 0;
     private int stageNum = 1;
-    private boolean isGameOver, isShowingTips = true;
+    private boolean isGameOver, isShowingTips = true, isShowingResult;
     private boolean boardsFallingDown = false;
 
-    public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap) {
+    public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap,
+                     int stageNum) {
         this.gameView = gameView;
         this.bmpHashMap = bmpHashMap;
+        this.stageNum = stageNum;
         this.initSprite();
     }
 
@@ -61,7 +66,7 @@ public class GameLogic {
         Point boardSize = this.boardsList.get(0).getSize();
         int suwakoW = this.bmpHashMap.get("suwako_jump").getWidth() / 20;
         int suwakoH = this.bmpHashMap.get("suwako_jump").getHeight() / 2;
-        int suwakoX = boardPos.x + (boardPos.x - suwakoW) / 2;
+        int suwakoX = boardPos.x + (boardSize.x - suwakoW) / 2;
         int suwakoY = boardPos.y - suwakoH;
 
         this.suwako = new Suwako(this.bmpHashMap,
@@ -80,9 +85,10 @@ public class GameLogic {
 
         //初始化提示板
         this.tipsBoard = new TipsBoard(
-                this.bmpHashMap.get("tips" + this.stageNum),
+                this.bmpHashMap.get("tips_board" + this.stageNum),
                 new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
                         (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.2412)));
+
 
         //初始化分数精灵
         Bitmap bmpNumber = this.bmpHashMap.get("number");
@@ -100,7 +106,7 @@ public class GameLogic {
     public void update() {
         //游戏未结束的时候
         if (!this.isGameOver) {
-            if (!this.isShowingTips) {
+            if (!this.isShowingTips && !this.isShowingResult) {
                 //更新主角逻辑
                 this.suwako.update();
                 float x = this.gameView.getSensorX();
@@ -154,6 +160,9 @@ public class GameLogic {
         }
         //更新显示分数
         this.scoreBoard.update();
+        if (this.isShowingResult) {
+            this.resultBoard.update();
+        }
         //释放所有待清除的精灵的内存
         this.flushSpriteList();
     }
@@ -166,7 +175,17 @@ public class GameLogic {
      * 通知过关，进行相关处理
      */
     public void notifyStageClear() {
-        //TODO: 过关逻辑
+        this.isShowingResult = true;
+        //获取关卡结束时间
+        this.endTime = new Date().getTime();
+        //初始化提示板
+        this.resultBoard = new ResultBoard(
+                this.bmpHashMap.get("result_board"),
+                this.bmpHashMap.get("star_level"),
+                new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
+                        -SuwakoJumpActivity.DISPLAY_HEIGHT / 2),
+                this.gameScore, this.endTime-this.startTime);
+        this.add(this.resultBoard);
     }
 
     /*
@@ -216,6 +235,11 @@ public class GameLogic {
         this.add(highScoreSprite);
     }
 
+
+    public int getStageNum() {
+        return this.stageNum;
+    }
+
     /*
     * 获取精灵列表
     * @return 精灵列表
@@ -240,13 +264,38 @@ public class GameLogic {
         return this.isShowingTips;
     }
 
+    /*
+    * 查询游戏是否正在展示游戏结果板
+    * @return 游戏是否正在展示游戏结果板
+    */
+    public boolean isShowingResult() {
+        return this.isShowingResult;
+    }
+
+    /*
+     * 隐藏TIPS板
+     */
     public void hideTipsBoard() {
         this.tipsBoard.hide();
         this.isShowingTips = false;
+        this.startTime = new Date().getTime();
     }
 
+    /*
+     * 获取TIPS板上的OK按钮矩形区域
+     */
     public Rect getTipsBoardButtonRect() {
         return this.tipsBoard.getRect();
+    }
+
+    /*
+     * 获取结果分数板上的两个按钮矩形区域列表
+     */
+    public ArrayList<Rect> getResultBoardButtonRect() {
+        ArrayList<Rect> rectsList = new ArrayList<Rect>();
+        rectsList.add(this.resultBoard.getRestartRect());
+        rectsList.add(this.resultBoard.getNextStageRect());
+        return rectsList;
     }
 
     /*

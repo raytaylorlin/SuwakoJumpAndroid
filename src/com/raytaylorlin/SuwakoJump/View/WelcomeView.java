@@ -6,15 +6,16 @@ import android.content.Context;
 import android.graphics.*;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import com.raytaylorlin.SuwakoJump.Lib.ImageHelper;
-import com.raytaylorlin.SuwakoJump.Sprites.GameButton;
+import com.raytaylorlin.SuwakoJump.Sprites.StarLevel;
 import com.raytaylorlin.SuwakoJump.R;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
-    private GameButton btnStartGame;
+    private StarLevel btnStartGame;
     //    private WelcomeViewThread welcomeThread;//绘制线程
     int status = 1;//当前的状态值
     int k = 0;//状态为2时用到的切换图片
@@ -69,13 +70,13 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
         int btnWidth = this.bmpStartGameButton.getWidth();
         int btnHeight = this.bmpStartGameButton.getHeight();
 
-        this.btnStartGame = new GameButton(this.bmpStartGameButton,
-                new Point(btnX, btnStartGameY),
-                new Point(btnWidth, btnHeight)) {
-            public void onClick() {
-                System.out.println("start game");
-            }
-        };
+//        this.btnStartGame = new StarLevel(this.bmpStartGameButton,
+//                new Point(btnX, btnStartGameY),
+//                new Point(btnWidth, btnHeight)) {
+//            public void onClick() {
+//                System.out.println("start game");
+//            }
+//        };
     }
 
     public void initSounds() {//初始化声音的方法
@@ -95,7 +96,7 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
 
     public void onDraw(Canvas canvas) {
         canvas.drawBitmap(this.bmpBackground, 0, 0, mainPaint);
-        this.btnStartGame.draw(canvas, mainPaint);
+//        this.btnStartGame.draw(canvas, mainPaint);
     }
 
     /*
@@ -104,13 +105,20 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         //屏幕被按下
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            Rect btnStartGameRect = this.btnStartGame.getRect();
+            Rect btnStartGameRect = new Rect(
+                    (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5458),
+                    (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.7687),
+                    (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.9208),
+                    (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.8387)
+            );
             double x = event.getX();
             double y = event.getY();
             if (x > btnStartGameRect.left && x < btnStartGameRect.right
                     && y > btnStartGameRect.top && y < btnStartGameRect.bottom) {
-                this.mainActivity.myHandler.sendEmptyMessage(
-                        SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
+                Message msg = new Message();
+                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                msg.arg2 = 1;
+                this.mainActivity.myHandler.sendMessage(msg);
             }
         }
         return super.onTouchEvent(event);//调用基类的方法

@@ -53,12 +53,12 @@ public class SuwakoJumpActivity extends Activity {
     public Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
             SuwakoJumpActivity _this = SuwakoJumpActivity.this;
-            switch (msg.what) {
+            switch (msg.arg1) {
                 case SuwakoJumpActivity.MSG_REFRESH:
 //                    _this.currentView.update();
                     break;
                 case SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW:
-                    gameView = new GameView(_this);
+                    gameView = new GameView(_this, 1);
                     _this.changeView(gameView);
                     break;
             }
@@ -80,24 +80,12 @@ public class SuwakoJumpActivity extends Activity {
         X_SCALE_FACTOR = DISPLAY_WIDTH / 480.0;
         Y_SCALE_FACTOR = DISPLAY_HEIGHT / 800.0;
 
-        try{
-
-        }
-        catch (Exception e){
-            Log.e("error",e.getMessage());
-            e.printStackTrace();
-        }
-//        tv.setTypeface (face);
-//        this.mainPaint.setTypeface(face);
-
         this.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor sensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         SensorEventListener listener = new SensorEventListener() {
             public void onSensorChanged(SensorEvent e) {
                 float x = e.values[SensorManager.DATA_X];
                 SuwakoJumpActivity.this.setSensorX(x);
-//                y = e.values[SensorManager.DATA_Y];
-//                z = e.values[SensorManager.DATA_Z];
             }
 
             public void onAccuracyChanged(Sensor s, int accuracy) {
@@ -111,12 +99,6 @@ public class SuwakoJumpActivity extends Activity {
         this.setContentView(this.welcomeView);//设置加载界面
         this.currentView = this.welcomeView;
 //        this.setContentView(this.loadingView);//设置加载界面
-        new Thread() {//线程
-            public void run() {
-//                Looper.prepare();
-//                welcomeView = new WelcomeView(PlaneActivity.this);//初始化WelcomeView
-            }
-        }.start();//启动线程
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -169,21 +151,4 @@ public class SuwakoJumpActivity extends Activity {
     public float getSensorX() {
         return this.sensorX;
     }
-
-
-    class GameThread implements Runnable {
-        public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
-                Message message = new Message();
-                message.what = SuwakoJumpActivity.MSG_REFRESH;
-                SuwakoJumpActivity.this.myHandler.sendMessage(message);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
-
 }
