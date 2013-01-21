@@ -77,7 +77,7 @@ public class StageMap {
 
     public static ArrayList<Board> getStageMap(int stageNum) {
         ArrayList<Board> boardList = new ArrayList<Board>();
-        int TOTAL_NUM;
+        int TOTAL_NUM = 0;
         switch (stageNum) {
             case 1:
                 TOTAL_NUM = 50;
@@ -91,24 +91,29 @@ public class StageMap {
                 }
                 break;
             case 2:
-                TOTAL_NUM = 50;
+                TOTAL_NUM = 70;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
                     int by_offset = RandomHelper.getRandom(BASE_INTERVAL / 2);
-//                    int by_offset = 0;
                     Point pos = new Point(getBoardX(), by - by_offset);
                     Board newBoard;
                     float r = RandomHelper.getRandom();
-                    if (r < 0.4) {
+                    if (r < 0.7) {
                         newBoard = new NormalBoard(bmpNormalBoard, pos);
                     } else {
                         newBoard = new BrokenBoard(bmpBrokenBoard, pos);
+                        r = RandomHelper.getRandom();
+                        if (r < 0.5) {
+                            boardList.add(new NormalBoard(bmpNormalBoard,
+                                    new Point(getBoardX(), by -
+                                            RandomHelper.getRandom(BASE_INTERVAL / 2, BASE_INTERVAL))));
+                        }
                     }
                     boardList.add(newBoard);
                 }
                 break;
             case 3:
-                TOTAL_NUM = 50;
+                TOTAL_NUM = 70;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
                     int by_offset = RandomHelper.getRandom(BASE_INTERVAL / 2);
@@ -119,6 +124,12 @@ public class StageMap {
                         newBoard = new NormalBoard(bmpNormalBoard, pos);
                     } else if (r < 0.7) {
                         newBoard = new BrokenBoard(bmpBrokenBoard, pos);
+                        r = RandomHelper.getRandom();
+                        if (r < 0.5) {
+                            boardList.add(new NormalBoard(bmpNormalBoard,
+                                    new Point(getBoardX(), by -
+                                            RandomHelper.getRandom(BASE_INTERVAL / 2, BASE_INTERVAL))));
+                        }
                     } else {
                         newBoard = new VanishBoard(bmpVanishBoard, pos);
                     }
@@ -126,7 +137,7 @@ public class StageMap {
                 }
                 break;
             case 4:
-                TOTAL_NUM = 50;
+                TOTAL_NUM = 100;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
                     int by_offset = RandomHelper.getRandom(BASE_INTERVAL / 2);
@@ -137,11 +148,15 @@ public class StageMap {
                         newBoard = new NormalBoard(bmpNormalBoard, pos);
                     } else if (r < 0.8) {
                         newBoard = new BrokenBoard(bmpBrokenBoard, pos);
+                        r = RandomHelper.getRandom();
+                        if (r < 0.3) {
+                            boardList.add(new NormalBoard(bmpNormalBoard,
+                                    new Point(getBoardX(), by -
+                                            RandomHelper.getRandom(BASE_INTERVAL / 2, BASE_INTERVAL))));
+                        }
                     } else {
                         newBoard = new VanishBoard(bmpVanishBoard, pos);
                     }
-                    //设置道具
-//                    float itemTypeFloat = RandomHelper.getRandom();
                     r = RandomHelper.getRandom();
                     if (r < 0.3) {
                         Point bPos = newBoard.getPosition();
@@ -156,7 +171,7 @@ public class StageMap {
                 }
                 break;
             case 5:
-                TOTAL_NUM = 50;
+                TOTAL_NUM = 100;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
                     int by_offset = RandomHelper.getRandom(BASE_INTERVAL / 2);
@@ -187,22 +202,53 @@ public class StageMap {
                 }
                 break;
             case 6:
-                break;
             case 7:
-                break;
             case 8:
-                break;
             case 9:
-                break;
             case 10:
-                break;
             case 11:
-                break;
             case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+                TOTAL_NUM = 20 * stageNum;
+                for (int i = 0; i < TOTAL_NUM; i++) {
+                    int by = DH - (i + 1) * BASE_INTERVAL;
+                    int by_offset = RandomHelper.getRandom(BASE_INTERVAL / 2);
+                    Point pos = new Point(getBoardX(), by - by_offset);
+                    Board newBoard;
+                    float r = RandomHelper.getRandom();
+                    if (r < 0.4) {
+                        newBoard = new NormalBoard(bmpNormalBoard, pos);
+                    } else if (r < 0.6) {
+                        newBoard = new BrokenBoard(bmpBrokenBoard, pos);
+                    } else if (r < 0.8) {
+                        newBoard = new VanishBoard(bmpVanishBoard, pos);
+                    } else {
+                        boolean isVertical = RandomHelper.getRandom() < 0.5;
+                        newBoard = new MovingBoard(bmpMovingBoard, pos, isVertical);
+                    }
+                    r = RandomHelper.getRandom();
+                    if (r < 0.3) {
+                        Point bPos = newBoard.getPosition();
+                        Point bSize = newBoard.getSize();
+                        Item newItem = new Spring(bmpItemSpring,
+                                new Point(RandomHelper.getRandom(bPos.x,
+                                        bPos.x + bSize.x - bmpItemSpring.getWidth()),
+                                        bPos.y - bmpItemSpring.getHeight()));
+                        newBoard.setItem(newItem);
+                    }
+                    boardList.add(newBoard);
+                }
                 break;
         }
         boardList.add(new FlagBoard(bmpFlagBoard,
-                new Point(getBoardX(), DH - (boardList.size() + 2) * BASE_INTERVAL)));
+                new Point(getBoardX(), DH - (TOTAL_NUM + 2) * BASE_INTERVAL)));
         return boardList;
     }
 }

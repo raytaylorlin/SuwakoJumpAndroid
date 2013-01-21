@@ -158,9 +158,11 @@ public class Suwako extends JSprite {
         //下降过程中做与板子的碰撞检测
         Point boardPos = board.getPosition();
         Point boardSize = board.getSize();
+        int footLine = this.drawPosition.y + this.imageSize.y -
+                (int) (this.imageSize.y * 0.22);
         if (!this.isUp
-                && this.drawPosition.y + this.imageSize.y >= boardPos.y - boardSize.y * 1.3
-                && this.drawPosition.y + this.imageSize.y <= boardPos.y + boardSize.y * 1.3
+                && footLine >= boardPos.y - boardSize.y
+                && footLine <= boardPos.y + boardSize.y
                 && this.drawPosition.x + this.imageSize.x * 0.75 >= boardPos.x
                 && this.drawPosition.x + this.imageSize.x * 0.25 <= boardPos.x + boardSize.x) {
             //获取碰撞的板子类型

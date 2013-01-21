@@ -23,7 +23,6 @@ public class GameLogic {
     private HashMap<String, Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
     private ArrayList<JSprite> spritesList = new ArrayList<JSprite>();
     private ArrayList<Board> boardsList = new ArrayList<Board>();
-    private StageMap stageMap;
 
     private JSprite gameOverText;
     private TipsBoard tipsBoard;
@@ -32,6 +31,7 @@ public class GameLogic {
     private Suwako suwako;
 
     private long startTime, endTime;
+    private int totalBoardNum = 0;
     private int gameScore = 0;
     private int stageNum = 1;
     private boolean isGameOver, isShowingTips = true, isShowingResult;
@@ -61,6 +61,7 @@ public class GameLogic {
         for (Board board : this.boardsList) {
             this.add(board);
         }
+        this.totalBoardNum = this.boardsList.size();
 
         //初始化suwako
         Point boardPos = this.boardsList.get(0).getPosition();
@@ -83,7 +84,7 @@ public class GameLogic {
         //初始化分数板
         this.scoreBoard = new ScoreBoard(
                 this.bmpHashMap.get("score_board"),
-                new Point(0, 0));
+                new Point(0, 0), this.stageNum);
 
         //初始化提示板
         this.tipsBoard = new TipsBoard(
@@ -183,7 +184,7 @@ public class GameLogic {
                 this.bmpHashMap.get("star_level"),
                 new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
                         -SuwakoJumpActivity.DISPLAY_HEIGHT / 2),
-                this.gameScore, this.endTime - this.startTime);
+                this.gameScore, this.endTime - this.startTime,this.totalBoardNum);
         this.add(this.resultBoard);
     }
 
@@ -220,14 +221,14 @@ public class GameLogic {
         Bitmap bmpNumber = this.bmpHashMap.get("number");
         double xScale = SuwakoJumpActivity.X_SCALE_FACTOR;
         double yScale = SuwakoJumpActivity.Y_SCALE_FACTOR;
-        this.resultScoreSprite = new ScoreBoard(bmpNumber,
-                new Point((int) (480 * 0.6 * xScale),
-                        (int) (800 * 0.285 * yScale)));
+//        this.resultScoreSprite = new ScoreBoard(bmpNumber,
+//                new Point((int) (480 * 0.6 * xScale),
+//                        (int) (800 * 0.285 * yScale)));
         this.resultScoreSprite.setFixedNumber(this.gameScore);
         this.resultScoreSprite.setVisible(false);
-        this.highScoreSprite = new ScoreBoard(bmpNumber,
-                new Point((int) (480 * 0.6 * xScale),
-                        (int) (800 * 0.34 * yScale)));
+//        this.highScoreSprite = new ScoreBoard(bmpNumber,
+//                new Point((int) (480 * 0.6 * xScale),
+//                        (int) (800 * 0.34 * yScale)));
         this.highScoreSprite.setFixedNumber(highScore);
         this.highScoreSprite.setVisible(false);
         this.add(resultScoreSprite);
@@ -294,6 +295,24 @@ public class GameLogic {
         ArrayList<Rect> rectsList = new ArrayList<Rect>();
         rectsList.add(this.resultBoard.getRestartRect());
         rectsList.add(this.resultBoard.getNextStageRect());
+        return rectsList;
+    }
+
+    /*
+    * 获取游戏结束板上的两个按钮矩形区域列表
+    */
+    public ArrayList<Rect> getGameoverButtonRect() {
+        ArrayList<Rect> rectsList = new ArrayList<Rect>();
+        rectsList.add(new Rect(
+                (int)(SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
+                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.5175),
+                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
+                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.575)));
+        rectsList.add(new Rect(
+                (int)(SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
+                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.62),
+                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
+                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.69)));
         return rectsList;
     }
 

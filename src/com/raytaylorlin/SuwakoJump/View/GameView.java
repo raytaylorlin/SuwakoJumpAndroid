@@ -156,6 +156,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                     msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
                     msg.arg2 = this.gameLogic.getStageNum();
                     this.mainActivity.myHandler.sendMessage(msg);
+                    //按下NextStage按钮事件
                 } else if (x > btnNextStageRect.left && x < btnNextStageRect.right
                         && y > btnNextStageRect.top && y < btnNextStageRect.bottom) {
                     Message msg = new Message();
@@ -164,23 +165,28 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                     this.mainActivity.myHandler.sendMessage(msg);
                 }
             }
-            //
+            //游戏结束阶段的触摸屏事件检测
+            ArrayList<Rect> btnRectList = this.gameLogic.getGameoverButtonRect();
+            Rect btnRestartRect = btnRectList.get(0);
+            Rect btnSelectRect = btnRectList.get(1);
             if (this.gameLogic.isGameOver()) {
-                Message msg = new Message();
-                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
-                msg.arg2 = this.gameLogic.getStageNum();
-
-                this.mainActivity.myHandler.sendMessage(msg);
-//                this.mainActivity.myHandler.sendEmptyMessage(
-//                        SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
+                //按下Restart按钮事件
+                if (x > btnRestartRect.left && x < btnRestartRect.right
+                        && y > btnRestartRect.top && y < btnRestartRect.bottom) {
+                    Message msg = new Message();
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                    msg.arg2 = this.gameLogic.getStageNum();
+                    this.mainActivity.myHandler.sendMessage(msg);
+                    //按下SelectStage按钮事件
+                } else if (x > btnSelectRect.left && x < btnSelectRect.right
+                        && y > btnSelectRect.top && y < btnSelectRect.bottom) {
+                    Message msg = new Message();
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW;
+                    this.mainActivity.myHandler.sendMessage(msg);
+                }
             } else {
                 this.gameLogic.setSuwakoAttack(new Point((int) x, (int) y));
             }
-//            if (x > btnStartGameRect.left && x < btnStartGameRect.right
-//                    && y > btnStartGameRect.top && y < btnStartGameRect.bottom) {
-//                this.mainActivity.myHandler.sendEmptyMessage(
-//                        SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW);
-//            }
         }
         return super.onTouchEvent(event);//调用基类的方法
     }

@@ -10,15 +10,16 @@ public class ResultBoard extends JSprite {
     private StarLevel starLevel;
     private Bitmap bmpStarLevel;
     private boolean canDrawText = false;
-    private int score;
+    private int score, boardNum;
     private long intervalTime;
 
     public ResultBoard(Bitmap bmpBoard, Bitmap bmpStarLevel,
-                       Point drawPosition, int score, long intervalTime) {
+                       Point drawPosition, int score, long intervalTime, int boardNum) {
         super(bmpBoard, drawPosition);
         this.bmpStarLevel = bmpStarLevel;
         this.score = score;
         this.intervalTime = intervalTime;
+        this.boardNum = boardNum;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ResultBoard extends JSprite {
             this.starLevel = new StarLevel(this.bmpStarLevel,
                     new Point((int) (this.drawPosition.x + this.imageSize.x * 0.5111),
                             (int) (this.drawPosition.y + this.imageSize.y * 0.5651)),
-                    2, true);
+                    this.calStarLevel(), true);
             this.canDrawText = true;
         }
     }
@@ -71,5 +72,24 @@ public class ResultBoard extends JSprite {
                 (int) (pos.y + size.y * 0.8077),
                 (int) (pos.x + size.x * 0.9222),
                 (int) (pos.y + size.y * 0.9319));
+    }
+
+    private int calStarLevel() {
+        float BASE_TIME = 0.3f;
+        float interval = new Date(this.intervalTime).getTime() / 100 / 10.0f;
+        int starLevel = 1;
+        float[] standardTime = {
+                BASE_TIME * 3 * this.boardNum,
+                BASE_TIME * 2 * this.boardNum,
+                BASE_TIME * this.boardNum
+        };
+        if (interval < standardTime[2]) {
+            starLevel = 3;
+        } else if (interval < standardTime[1]) {
+            starLevel = 2;
+        } else {
+            starLevel = 1;
+        }
+        return starLevel;
     }
 }

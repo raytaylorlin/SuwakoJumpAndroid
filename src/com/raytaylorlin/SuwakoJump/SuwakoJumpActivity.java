@@ -38,6 +38,7 @@ public class SuwakoJumpActivity extends Activity {
     boolean isSound = true;//是否播放声音
     public static final int MSG_REFRESH = 0x000001;
     public static final int MSG_CHANGE_TO_GAMEVIEW = 0x000002;
+    public static final int MSG_CHANGE_TO_SELECTVIEW = 0x000003;
     public static final int GAME_FRAME_RATE = 30;
 
     public static final int WELCOME_VIEW_INDEX = 0;
@@ -61,6 +62,10 @@ public class SuwakoJumpActivity extends Activity {
                     gameView = new GameView(_this, msg.arg2);
                     _this.changeView(gameView);
                     break;
+                case SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW:
+//                    gameView = new GameView(_this, msg.arg2);
+//                    _this.changeView(gameView);
+                    break;
             }
             super.handleMessage(msg);
         }
@@ -73,6 +78,8 @@ public class SuwakoJumpActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        //设置实际宽高值和缩放比例
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         DISPLAY_WIDTH = dm.widthPixels;
@@ -80,6 +87,7 @@ public class SuwakoJumpActivity extends Activity {
         X_SCALE_FACTOR = DISPLAY_WIDTH / 480.0;
         Y_SCALE_FACTOR = DISPLAY_HEIGHT / 800.0;
 
+        //初始化重力感应器
         this.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor sensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         SensorEventListener listener = new SensorEventListener() {
@@ -87,13 +95,13 @@ public class SuwakoJumpActivity extends Activity {
                 float x = e.values[SensorManager.DATA_X];
                 SuwakoJumpActivity.this.setSensorX(x);
             }
-
             public void onAccuracyChanged(Sensor s, int accuracy) {
             }
         };
         //注册listener，第三个参数是检测的精确度
         sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_GAME);
 
+        //初始化游戏界面
         this.loadingView = new LoadingView(this, 1);
         this.welcomeView = new WelcomeView(this);
         this.setContentView(this.welcomeView);//设置加载界面
@@ -144,10 +152,18 @@ public class SuwakoJumpActivity extends Activity {
         this.CURRENT_VIEW_INDEX = targetView.getViewIndex();
     }
 
+    /*
+     * 设置重力感应器X轴数值
+     * @param sensorX 设置的X轴数值
+     */
     public void setSensorX(float sensorX) {
         this.sensorX = sensorX;
     }
 
+    /*
+     * 获取重力感应器X轴数值
+     * @return 重力感应器X轴数值
+     */
     public float getSensorX() {
         return this.sensorX;
     }
