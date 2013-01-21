@@ -29,8 +29,8 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
         Typeface typeFace = Typeface.createFromAsset(mainActivity.getAssets(),
                 "fonts/Kristen.ttf");
         this.mainPaint.setTypeface(typeFace);
-        this.mainPaint.setTextSize((float)(30 * SuwakoJumpActivity.X_SCALE_FACTOR));
-
+        this.mainPaint.setTextSize((float)
+                (30 * (SuwakoJumpActivity.DISPLAY_WIDTH / 480.0)));
 
         this.initBitmap();
         this.initSprite();

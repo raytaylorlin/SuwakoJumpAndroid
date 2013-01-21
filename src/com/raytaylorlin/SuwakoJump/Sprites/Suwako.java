@@ -10,10 +10,6 @@ import com.raytaylorlin.SuwakoJump.Sprites.Item.Item;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 import java.util.HashMap;
-//import SuwakoJump.Frame.MainGame;
-//import SuwakoJump.Frame.CanvasPanel;
-//import SuwakoJump.Lib.SoundEffect;
-//import SuwakoJump.Lib.SoundHelper;
 
 public class Suwako extends JSprite {
     private final int STATUS_UP = 0;
@@ -21,8 +17,8 @@ public class Suwako extends JSprite {
     private final int STATUS_ATTACK = 2;
     private final int STATUS_WIN = 3;
 
-    private final int FIRST_V = 20;
-    private final int MOVE_STEP_X = 10;
+    private final int FIRST_V = (int) ((20 / 800.0) *
+            SuwakoJumpActivity.DISPLAY_HEIGHT);
     private final int MOVE_STEP_Y = 4;
     private final int FRAME_Y_BUFFER = 2;
 

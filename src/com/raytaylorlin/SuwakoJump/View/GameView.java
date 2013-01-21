@@ -51,8 +51,6 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.suwako_jump);
         this.bmpSuwakoWin = BitmapFactory.decodeResource(getResources(),
                 R.drawable.suwako_win);
-        this.bmpSuwakoFly = BitmapFactory.decodeResource(getResources(),
-                R.drawable.suwako_fly);
         this.bmpGameOverText = BitmapFactory.decodeResource(getResources(),
                 R.drawable.gameover_text);
         this.bmpItemSpring = BitmapFactory.decodeResource(getResources(),
@@ -97,7 +95,6 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpScoreBoard = ImageHelper.adjustScaleImage(this.bmpScoreBoard);
         this.bmpSuwakoJump = ImageHelper.adjustScaleImage(this.bmpSuwakoJump);
         this.bmpSuwakoWin = ImageHelper.adjustScaleImage(this.bmpSuwakoWin);
-        this.bmpSuwakoFly = ImageHelper.adjustScaleImage(this.bmpSuwakoFly);
         this.bmpGameOverText = ImageHelper.adjustScaleImage(this.bmpGameOverText);
         this.bmpItemSpring = ImageHelper.adjustScaleImage(this.bmpItemSpring);
         this.bmpTipsBoard1 = ImageHelper.adjustScaleImage(this.bmpTipsBoard1);
@@ -117,8 +114,6 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("score_board", this.bmpScoreBoard);
         this.bmpHashMap.put("suwako_jump", this.bmpSuwakoJump);
         this.bmpHashMap.put("suwako_win", this.bmpSuwakoWin);
-        this.bmpHashMap.put("suwako_win", this.bmpSuwakoWin);
-        this.bmpHashMap.put("suwako_fly", this.bmpSuwakoFly);
         this.bmpHashMap.put("game_over_text", this.bmpGameOverText);
         this.bmpHashMap.put("item_spring", this.bmpItemSpring);
         this.bmpHashMap.put("tips_board1", this.bmpTipsBoard1);

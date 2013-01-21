@@ -3,6 +3,8 @@ package com.raytaylorlin.SuwakoJump;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -23,6 +25,7 @@ public class SuwakoJumpActivity extends Activity {
     private CommonView currentView;
     private CommonView selectStageView, welcomeView, gameView;
 
+    private static Bitmap StandardBitmap;
     //重力加速度感应管理器
     private SensorManager sensorManager;
     private float sensorX;
@@ -69,12 +72,14 @@ public class SuwakoJumpActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //设置实际宽高值和缩放比例
+        StandardBitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.welcome_view_background);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         DISPLAY_WIDTH = dm.widthPixels;
         DISPLAY_HEIGHT = dm.heightPixels;
-        X_SCALE_FACTOR = DISPLAY_WIDTH / 480.0;
-        Y_SCALE_FACTOR = DISPLAY_HEIGHT / 800.0;
+        X_SCALE_FACTOR = (float) DISPLAY_WIDTH / (StandardBitmap.getWidth());
+        Y_SCALE_FACTOR = (float) DISPLAY_HEIGHT / (StandardBitmap.getHeight());
 
         //初始化重力感应器
         this.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

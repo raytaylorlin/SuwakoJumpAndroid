@@ -41,8 +41,8 @@ public class SelectStageView extends CommonView implements SurfaceHolder.Callbac
     protected void initSprite() {
         int DW = SuwakoJumpActivity.DISPLAY_WIDTH;
         int DH = SuwakoJumpActivity.DISPLAY_HEIGHT;
-        int x_offset = (int) (76 * SuwakoJumpActivity.X_SCALE_FACTOR);
-        int y_offset = (int) (86 * SuwakoJumpActivity.Y_SCALE_FACTOR);
+        int x_offset = (int) (76 * (SuwakoJumpActivity.DISPLAY_WIDTH / 480.0));
+        int y_offset = (int) (86 * (SuwakoJumpActivity.DISPLAY_HEIGHT / 800.0));
         this.stageRectList = new Rect[4][5];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 5; j++) {

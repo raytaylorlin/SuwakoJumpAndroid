@@ -317,12 +317,12 @@ public class GameLogic {
         rectsList.add(new Rect(
                 (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
                 (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.5175),
-                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.6812),
                 (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.575)));
         rectsList.add(new Rect(
                 (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
                 (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.62),
-                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.6812),
                 (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.69)));
         return rectsList;
     }
