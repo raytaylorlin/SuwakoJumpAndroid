@@ -15,12 +15,6 @@ import com.raytaylorlin.SuwakoJump.R;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
-    private StarLevel btnStartGame;
-    //    private WelcomeViewThread welcomeThread;//绘制线程
-    int status = 1;//当前的状态值
-    int k = 0;//状态为2时用到的切换图片
-    int alpha = 255;//透明度
-
     SoundPool soundPool;//声音
     HashMap<Integer, Integer> soundPoolMap;
 
@@ -114,8 +108,7 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
             if (x > btnStartGameRect.left && x < btnStartGameRect.right
                     && y > btnStartGameRect.top && y < btnStartGameRect.bottom) {
                 Message msg = new Message();
-                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
-                msg.arg2 = 11;
+                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW;
                 this.mainActivity.myHandler.sendMessage(msg);
             }
         }

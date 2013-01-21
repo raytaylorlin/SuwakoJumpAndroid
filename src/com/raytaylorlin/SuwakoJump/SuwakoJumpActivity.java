@@ -20,16 +20,8 @@ import com.raytaylorlin.SuwakoJump.View.*;
 import java.util.Timer;
 
 public class SuwakoJumpActivity extends Activity {
-    //    CommonView gameView;//GameView的引用
-
-    //    FailView failView;//游戏失败界面的引用
-//    HelpView helpView;//HelpView的引用
-//    WinView winView;//欢迎界面的引用
     private CommonView currentView;
-    private CommonView loadingView, welcomeView, gameView;
-
-    private Timer timer;
-    private GameTimeTask gameTimeTask;
+    private CommonView selectStageView, welcomeView, gameView;
 
     //重力加速度感应管理器
     private SensorManager sensorManager;
@@ -55,16 +47,13 @@ public class SuwakoJumpActivity extends Activity {
         public void handleMessage(Message msg) {
             SuwakoJumpActivity _this = SuwakoJumpActivity.this;
             switch (msg.arg1) {
-                case SuwakoJumpActivity.MSG_REFRESH:
-//                    _this.currentView.update();
+                case SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW:
+                    _this.selectStageView = new SelectStageView(_this);
+                    _this.changeView(_this.selectStageView);
                     break;
                 case SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW:
-                    gameView = new GameView(_this, msg.arg2);
-                    _this.changeView(gameView);
-                    break;
-                case SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW:
-//                    gameView = new GameView(_this, msg.arg2);
-//                    _this.changeView(gameView);
+                    _this.gameView = new GameView(_this, msg.arg2);
+                    _this.changeView(_this.gameView);
                     break;
             }
             super.handleMessage(msg);
@@ -95,6 +84,7 @@ public class SuwakoJumpActivity extends Activity {
                 float x = e.values[SensorManager.DATA_X];
                 SuwakoJumpActivity.this.setSensorX(x);
             }
+
             public void onAccuracyChanged(Sensor s, int accuracy) {
             }
         };
@@ -102,11 +92,9 @@ public class SuwakoJumpActivity extends Activity {
         sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_GAME);
 
         //初始化游戏界面
-        this.loadingView = new LoadingView(this, 1);
+//        this.loadingView = new LoadingView(this, 1);
         this.welcomeView = new WelcomeView(this);
         this.setContentView(this.welcomeView);//设置加载界面
-        this.currentView = this.welcomeView;
-//        this.setContentView(this.loadingView);//设置加载界面
     }
 
     public boolean onTouchEvent(MotionEvent event) {

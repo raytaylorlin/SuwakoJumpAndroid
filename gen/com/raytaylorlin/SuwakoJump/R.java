@@ -30,7 +30,7 @@ public final class R {
         public static final int number=0x7f020010;
         public static final int result_board=0x7f020011;
         public static final int score_board=0x7f020012;
-        public static final int select_stage=0x7f020013;
+        public static final int select_stage_view=0x7f020013;
         public static final int star_level=0x7f020014;
         public static final int start_game_button=0x7f020015;
         public static final int suwako_fly=0x7f020016;
