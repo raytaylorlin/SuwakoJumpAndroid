@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Message;
 import android.view.SurfaceHolder;
+import com.raytaylorlin.SuwakoJump.Lib.ImageHelper;
 import com.raytaylorlin.SuwakoJump.R;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
@@ -12,28 +14,24 @@ public class LoadingView extends CommonView implements SurfaceHolder.Callback {
     private Paint paint;
     //背景图片
     private Bitmap loadingBackground;
+    private int stageNum, loadingCount;
+    private boolean isLoaded = false;
 
-    private int loadingProcess = 0;//0到100表示进度
-    int type;
-
-    public LoadingView(SuwakoJumpActivity mainActivity, int type) {
+    public LoadingView(SuwakoJumpActivity mainActivity, int stageNum) {
         super(mainActivity);
-        this.type = type;
+        this.stageNum = stageNum;
     }
 
     @Override
     protected void initBitmap() {
         this.paint = new Paint();//创建画笔
-        this.paint.setTextSize(12);//设置字体大小
         this.loadingBackground = BitmapFactory.decodeResource(getResources(),
                 R.drawable.loading_background);
-        this.loadingBackground = Bitmap.createScaledBitmap(this.loadingBackground,
-                SuwakoJumpActivity.DISPLAY_WIDTH, SuwakoJumpActivity.DISPLAY_HEIGHT, true);
-//        this.processMan = BitmapFactory.decodeResource(getResources(), R.drawable.processman);
+        this.loadingBackground = ImageHelper.adjustScaleImage(this.loadingBackground);
     }
 
     @Override
-    protected void initSprite(){
+    protected void initSprite() {
 
     }
 
@@ -43,7 +41,13 @@ public class LoadingView extends CommonView implements SurfaceHolder.Callback {
     }
 
     @Override
-    public void update(){
-
+    public void update() {
+        if (!this.isLoaded) {
+            Message msg = new Message();
+            msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+            msg.arg2 = this.stageNum;
+            this.mainActivity.myHandler.sendMessage(msg);
+            this.isLoaded = true;
+        }
     }
 }

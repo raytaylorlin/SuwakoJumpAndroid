@@ -22,8 +22,8 @@ public class Suwako extends JSprite {
     private final int MOVE_STEP_Y = 4;
     private final int FRAME_Y_BUFFER = 2;
 
-    //    private SoundEffect seJump=new SoundEffect("sound/jump.wav");
     private HashMap<String, Bitmap> bmpHashMap;
+    private HashMap<String, Integer> soundMap;
     private GameLogic gameLogic;
 
     public boolean isOverLine;
@@ -38,9 +38,11 @@ public class Suwako extends JSprite {
     private int fallCount = 1;
 
     public Suwako(HashMap<String, Bitmap> bmpHashMap,
+                  HashMap<String, Integer> soundMap,
                   Point drawPosition, Point imageSize, GameLogic gameLogic) {
         super(bmpHashMap.get("suwako_jump"), drawPosition, imageSize);
         this.bmpHashMap = bmpHashMap;
+        this.soundMap = soundMap;
         this.gameLogic = gameLogic;
         this.sheetSize = new Point(20, 2);
     }
@@ -165,6 +167,8 @@ public class Suwako extends JSprite {
             String boardType = board.getClass().getName();
             if (boardType.contains("BrokenBoard")) {
                 ((BrokenBoard) board).setBroken();
+                SuwakoJumpActivity.SP.play(
+                        this.soundMap.get("broken"), 1, 1, 0, 0, 1);
                 return false;
             } else if (boardType.contains("VanishBoard")) {
                 ((VanishBoard) board).vanish();
@@ -180,7 +184,8 @@ public class Suwako extends JSprite {
             //重新设置主角状态
             this.setStatus(STATUS_UP);
             this.drawPosition.y = boardPos.y - this.imageSize.y;
-//            SoundHelper.play(this.seJump);
+            SuwakoJumpActivity.SP.play(
+                    this.soundMap.get("jump2"), 1, 1, 0, 0, 1);
             return true;
         } else {
             return false;
@@ -196,6 +201,7 @@ public class Suwako extends JSprite {
         Rect itemRect = item.getRect();
         if (!this.isUp && suwakoRect.intersect(itemRect)) {
             item.gainEffect(this);
+            SuwakoJumpActivity.SP.play(this.soundMap.get("jump"), 1, 1, 0, 0, 1);
         }
     }
 

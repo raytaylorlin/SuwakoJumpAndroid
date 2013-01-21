@@ -10,6 +10,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,7 +25,8 @@ import java.util.Timer;
 
 public class SuwakoJumpActivity extends Activity {
     private CommonView currentView;
-    private CommonView selectStageView, welcomeView, gameView;
+    private CommonView selectStageView, welcomeView,
+            gameView,loadingView;
 
     private static Bitmap StandardBitmap;
     //重力加速度感应管理器
@@ -31,9 +34,11 @@ public class SuwakoJumpActivity extends Activity {
     private float sensorX;
 
     boolean isSound = true;//是否播放声音
+    public static SoundPool SP = new SoundPool(5, AudioManager.STREAM_MUSIC, 100);
     public static final int MSG_REFRESH = 0x000001;
     public static final int MSG_CHANGE_TO_GAMEVIEW = 0x000002;
     public static final int MSG_CHANGE_TO_SELECTVIEW = 0x000003;
+    public static final int MSG_CHANGE_TO_LOADINGVIEW = 0x000004;
     public static final int GAME_FRAME_RATE = 30;
 
     public static final int WELCOME_VIEW_INDEX = 0;
@@ -50,6 +55,10 @@ public class SuwakoJumpActivity extends Activity {
         public void handleMessage(Message msg) {
             SuwakoJumpActivity _this = SuwakoJumpActivity.this;
             switch (msg.arg1) {
+                case SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW:
+                    _this.loadingView = new LoadingView(_this, msg.arg2);
+                    _this.changeView(_this.loadingView);
+                    break;
                 case SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW:
                     _this.selectStageView = new SelectStageView(_this);
                     _this.changeView(_this.selectStageView);

@@ -6,6 +6,7 @@ package com.raytaylorlin.SuwakoJump;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.SoundPool;
 import com.raytaylorlin.SuwakoJump.Lib.FileHelper;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
 import com.raytaylorlin.SuwakoJump.Sprites.*;
@@ -20,7 +21,8 @@ import java.util.Iterator;
 public class GameLogic {
     private GameView gameView;
 
-    private HashMap<String, Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
+    private HashMap<String, Integer> soundMap;
+    private HashMap<String, Bitmap> bmpHashMap;
     private ArrayList<JSprite> spritesList = new ArrayList<JSprite>();
     private ArrayList<Board> boardsList = new ArrayList<Board>();
 
@@ -39,9 +41,10 @@ public class GameLogic {
     private Suwako suwako1;
 
     public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap,
-                     int stageNum) {
+                     HashMap<String, Integer> soundMap, int stageNum) {
         this.gameView = gameView;
         this.bmpHashMap = bmpHashMap;
+        this.soundMap = soundMap;
         this.stageNum = stageNum;
         this.initSprite();
     }
@@ -71,10 +74,9 @@ public class GameLogic {
         int suwakoX = boardPos.x + (boardSize.x - suwakoW) / 2;
         int suwakoY = boardPos.y - suwakoH;
 
-        this.suwako = new Suwako(this.bmpHashMap,
+        this.suwako = new Suwako(this.bmpHashMap,this.soundMap,
                 new Point(suwakoX, suwakoY),
                 new Point(suwakoW, suwakoH), this);
-
 
         //初始化游戏结束文字
         this.gameOverText = new JSprite(
@@ -164,8 +166,7 @@ public class GameLogic {
         if (this.isShowingTips) {
             if (this.tipsBoard != null) {
                 this.tipsBoard.update();
-            }
-            else{
+            } else {
                 this.hideTipsBoard();
             }
         }
@@ -205,6 +206,8 @@ public class GameLogic {
         for (int i = 0; i < this.boardsList.size(); i++) {
             this.boardsList.get(i).isUpMoving = true;
         }
+        SuwakoJumpActivity.SP.play(
+                this.soundMap.get("die"), 1, 1, 0, 0, 1);
         //显示得分和最高分
 //        this.showResultScore();
     }

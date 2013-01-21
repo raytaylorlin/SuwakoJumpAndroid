@@ -89,7 +89,7 @@ public class SelectStageView extends CommonView implements SurfaceHolder.Callbac
                             y > this.stageRectList[i][j].top &&
                             y < this.stageRectList[i][j].bottom) {
                         Message msg = new Message();
-                        msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                        msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
                         msg.arg2 = i * 5 + j + 1;
                         this.mainActivity.myHandler.sendMessage(msg);
                         return super.onTouchEvent(event);

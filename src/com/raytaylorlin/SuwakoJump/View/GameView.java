@@ -1,6 +1,8 @@
 package com.raytaylorlin.SuwakoJump.View;
 
 import android.graphics.*;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -16,18 +18,22 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     //背景图片
     private ArrayList<Bitmap> bmpBackgroundList;
     private Bitmap bmpBackground1, bmpBackground2, bmpBackground3, bmpBackground4,
-            bmpScoreBoard, bmpSuwakoJump, bmpSuwakoWin, bmpSuwakoFly,
+            bmpScoreBoard, bmpSuwakoJump, bmpSuwakoWin,
             bmpGameOverText, bmpResultBoard;
     private Bitmap bmpTipsBoard1, bmpTipsBoard2,
             bmpTipsBoard3, bmpTipsBoard4, bmpTipsBoard5;
     private Bitmap bmpItemSpring, bmpStarLevel;
     private HashMap<String, Bitmap> bmpHashMap;
 
+
+    private HashMap<String, Integer> soundMap = new HashMap<String, Integer>();
+
     private GameLogic gameLogic;
 
     public GameView(SuwakoJumpActivity mainActivity, int stageNum) {
         super(mainActivity);
-        this.gameLogic = new GameLogic(this, this.bmpHashMap, stageNum);
+        this.initSound();
+        this.gameLogic = new GameLogic(this, this.bmpHashMap, this.soundMap,stageNum);
         TutorialThread gameThread = new GameViewThread(getHolder(), this);
         gameThread.start();
         this.viewIndex = SuwakoJumpActivity.GAME_VIEW_INDEX;
@@ -130,6 +136,19 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
 
     }
 
+    private void initSound(){
+        this.soundMap.put("jump",
+                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.jump, 1));
+        this.soundMap.put("jump2",
+                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.jump2, 1));
+        this.soundMap.put("land",
+                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.land, 1));
+        this.soundMap.put("die",
+                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.die, 1));
+        this.soundMap.put("broken",
+                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.broken, 1));
+    }
+
     public void onDraw(Canvas canvas) {
         int bgNum = (this.gameLogic.getStageNum() - 1) / 5;
         canvas.drawBitmap(this.bmpBackgroundList.get(bgNum), 0, 0, this.mainPaint);
@@ -163,14 +182,14 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 if (x > btnRestartRect.left && x < btnRestartRect.right
                         && y > btnRestartRect.top && y < btnRestartRect.bottom) {
                     Message msg = new Message();
-                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
                     msg.arg2 = this.gameLogic.getStageNum();
                     this.mainActivity.myHandler.sendMessage(msg);
                     //按下NextStage按钮事件
                 } else if (x > btnNextStageRect.left && x < btnNextStageRect.right
                         && y > btnNextStageRect.top && y < btnNextStageRect.bottom) {
                     Message msg = new Message();
-                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
                     msg.arg2 = this.gameLogic.getStageNum() + 1;
                     this.mainActivity.myHandler.sendMessage(msg);
                 }
@@ -184,7 +203,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 if (x > btnRestartRect.left && x < btnRestartRect.right
                         && y > btnRestartRect.top && y < btnRestartRect.bottom) {
                     Message msg = new Message();
-                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
                     msg.arg2 = this.gameLogic.getStageNum();
                     this.mainActivity.myHandler.sendMessage(msg);
                     //按下SelectStage按钮事件
