@@ -115,7 +115,7 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
                     && y > btnStartGameRect.top && y < btnStartGameRect.bottom) {
                 Message msg = new Message();
                 msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW;
-                msg.arg2 = 1;
+                msg.arg2 = 11;
                 this.mainActivity.myHandler.sendMessage(msg);
             }
         }

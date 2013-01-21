@@ -87,17 +87,21 @@ public class GameLogic {
                 new Point(0, 0), this.stageNum);
 
         //初始化提示板
-        this.tipsBoard = new TipsBoard(
-                this.bmpHashMap.get("tips_board" + this.stageNum),
-                new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
-                        -SuwakoJumpActivity.DISPLAY_HEIGHT / 2));
+        if (this.stageNum <= 5) {
+            this.tipsBoard = new TipsBoard(
+                    this.bmpHashMap.get("tips_board" + this.stageNum),
+                    new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
+                            -SuwakoJumpActivity.DISPLAY_HEIGHT / 2));
+        }
 
 
         //添加精灵
         this.add(this.gameOverText);
         this.add(this.suwako);
         this.add(this.scoreBoard);
-        this.add(this.tipsBoard);
+        if (this.tipsBoard != null) {
+            this.add(this.tipsBoard);
+        }
     }
 
     public void update() {
@@ -158,7 +162,12 @@ public class GameLogic {
         //更新显示分数
         this.scoreBoard.update();
         if (this.isShowingTips) {
-            this.tipsBoard.update();
+            if (this.tipsBoard != null) {
+                this.tipsBoard.update();
+            }
+            else{
+                this.hideTipsBoard();
+            }
         }
         if (this.isShowingResult) {
             this.resultBoard.update();
@@ -184,7 +193,7 @@ public class GameLogic {
                 this.bmpHashMap.get("star_level"),
                 new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
                         -SuwakoJumpActivity.DISPLAY_HEIGHT / 2),
-                this.gameScore, this.endTime - this.startTime,this.totalBoardNum);
+                this.gameScore, this.endTime - this.startTime, this.totalBoardNum);
         this.add(this.resultBoard);
     }
 
@@ -276,7 +285,9 @@ public class GameLogic {
      * 隐藏TIPS板
      */
     public void hideTipsBoard() {
-        this.tipsBoard.hide();
+        if (this.tipsBoard != null) {
+            this.tipsBoard.hide();
+        }
         this.isShowingTips = false;
         this.startTime = new Date().getTime();
     }
@@ -304,15 +315,15 @@ public class GameLogic {
     public ArrayList<Rect> getGameoverButtonRect() {
         ArrayList<Rect> rectsList = new ArrayList<Rect>();
         rectsList.add(new Rect(
-                (int)(SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
-                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.5175),
-                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
-                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.575)));
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.5175),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.575)));
         rectsList.add(new Rect(
-                (int)(SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
-                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.62),
-                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
-                (int)(SuwakoJumpActivity.DISPLAY_HEIGHT * 0.69)));
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.62),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.6812),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.69)));
         return rectsList;
     }
 

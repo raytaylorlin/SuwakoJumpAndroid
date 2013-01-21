@@ -35,7 +35,7 @@ public class ScoreBoard extends JSprite {
                     (int) (this.imageSize.x * 0.0208),
                     (int) (this.imageSize.y * 0.05) + textOffset, paint);
             canvas.drawText(stageText,
-                    (int) (this.imageSize.x * 0.708),
+                    (int) (this.imageSize.x * 0.6),
                     (int) (this.imageSize.y * 0.05) + textOffset, paint);
         }
     }

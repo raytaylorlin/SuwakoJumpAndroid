@@ -14,8 +14,9 @@ import java.util.HashMap;
 
 public class GameView extends CommonView implements SurfaceHolder.Callback {
     //背景图片
-    private Bitmap bmpBackground, bmpScoreBoard,
-            bmpSuwakoJump, bmpSuwakoWin, bmpSuwakoFly,
+    private ArrayList<Bitmap> bmpBackgroundList;
+    private Bitmap bmpBackground1, bmpBackground2, bmpBackground3, bmpBackground4,
+            bmpScoreBoard, bmpSuwakoJump, bmpSuwakoWin, bmpSuwakoFly,
             bmpGameOverText, bmpResultBoard;
     private Bitmap bmpTipsBoard1, bmpTipsBoard2,
             bmpTipsBoard3, bmpTipsBoard4, bmpTipsBoard5;
@@ -36,8 +37,14 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     protected void initBitmap() {
         this.bmpHashMap = new HashMap<String, Bitmap>();
         //加载图片资源
-        this.bmpBackground = BitmapFactory.decodeResource(getResources(),
-                R.drawable.game_view_background);
+        this.bmpBackground1 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.game_view_background1);
+        this.bmpBackground2 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.game_view_background2);
+        this.bmpBackground3 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.game_view_background3);
+        this.bmpBackground4 = BitmapFactory.decodeResource(getResources(),
+                R.drawable.game_view_background4);
         this.bmpScoreBoard = BitmapFactory.decodeResource(getResources(),
                 R.drawable.score_board);
         this.bmpSuwakoJump = BitmapFactory.decodeResource(getResources(),
@@ -83,7 +90,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("board_flag", ImageHelper.adjustScaleImage(bmpBoardFlag));
 
         //调整图片尺寸
-        this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground);
+        this.bmpBackground1 = ImageHelper.adjustScaleImage(this.bmpBackground1);
+        this.bmpBackground2 = ImageHelper.adjustScaleImage(this.bmpBackground2);
+        this.bmpBackground3 = ImageHelper.adjustScaleImage(this.bmpBackground3);
+        this.bmpBackground4 = ImageHelper.adjustScaleImage(this.bmpBackground4);
         this.bmpScoreBoard = ImageHelper.adjustScaleImage(this.bmpScoreBoard);
         this.bmpSuwakoJump = ImageHelper.adjustScaleImage(this.bmpSuwakoJump);
         this.bmpSuwakoWin = ImageHelper.adjustScaleImage(this.bmpSuwakoWin);
@@ -99,7 +109,11 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpStarLevel = ImageHelper.adjustScaleImage(this.bmpStarLevel);
 
         //建立字符串和图片的映射
-        this.bmpHashMap.put("background", this.bmpBackground);
+        this.bmpBackgroundList = new ArrayList<Bitmap>();
+        this.bmpBackgroundList.add(this.bmpBackground1);
+        this.bmpBackgroundList.add(this.bmpBackground2);
+        this.bmpBackgroundList.add(this.bmpBackground3);
+        this.bmpBackgroundList.add(this.bmpBackground4);
         this.bmpHashMap.put("score_board", this.bmpScoreBoard);
         this.bmpHashMap.put("suwako_jump", this.bmpSuwakoJump);
         this.bmpHashMap.put("suwako_win", this.bmpSuwakoWin);
@@ -122,7 +136,8 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     }
 
     public void onDraw(Canvas canvas) {
-        canvas.drawBitmap(this.bmpBackground, 0, 0, this.mainPaint);
+        int bgNum = (this.gameLogic.getStageNum() - 1) / 5;
+        canvas.drawBitmap(this.bmpBackgroundList.get(bgNum), 0, 0, this.mainPaint);
         ArrayList<JSprite> spritesList = this.gameLogic.getSpritesList();
         for (JSprite sprite : spritesList) {
             sprite.draw(canvas, this.mainPaint);

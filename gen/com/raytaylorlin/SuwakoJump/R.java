@@ -18,7 +18,7 @@ public final class R {
         public static final int board_normal=0x7f020004;
         public static final int board_vanish=0x7f020005;
         public static final int btn=0x7f020006;
-        public static final int game_view_background=0x7f020007;
+        public static final int game_view_background1=0x7f020007;
         public static final int game_view_background2=0x7f020008;
         public static final int game_view_background3=0x7f020009;
         public static final int game_view_background4=0x7f02000a;
