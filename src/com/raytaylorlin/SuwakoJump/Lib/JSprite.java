@@ -59,6 +59,10 @@ public class JSprite {
         this.isVisible = false;
     }
 
+    public void show() {
+        this.isVisible = true;
+    }
+
     public boolean isToDisposed() {
         return this.toDisposed;
     }

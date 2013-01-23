@@ -6,9 +6,8 @@ package com.raytaylorlin.SuwakoJump;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.media.SoundPool;
-import com.raytaylorlin.SuwakoJump.Lib.FileHelper;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
+import com.raytaylorlin.SuwakoJump.Lib.SoundHelper;
 import com.raytaylorlin.SuwakoJump.Sprites.*;
 import com.raytaylorlin.SuwakoJump.Sprites.Board.*;
 import com.raytaylorlin.SuwakoJump.View.GameView;
@@ -21,15 +20,14 @@ import java.util.Iterator;
 public class GameLogic {
     private GameView gameView;
 
-    private HashMap<String, Integer> soundMap;
     private HashMap<String, Bitmap> bmpHashMap;
     private ArrayList<JSprite> spritesList = new ArrayList<JSprite>();
     private ArrayList<Board> boardsList = new ArrayList<Board>();
 
-    private JSprite gameOverText;
+    private JSprite gameOverText, pauseBoardOn, pauseBoardOff;
     private TipsBoard tipsBoard;
     private ResultBoard resultBoard;
-    private ScoreBoard scoreBoard, resultScoreSprite, highScoreSprite;
+    private ScoreBoard scoreBoard;
     private Suwako suwako;
 
     private long startTime, endTime;
@@ -37,14 +35,13 @@ public class GameLogic {
     private int gameScore = 0;
     private int stageNum = 1;
     private boolean isGameOver, isShowingTips = true, isShowingResult;
+    private boolean isPause;
+    public boolean canPlaySound = true;
     private boolean boardsFallingDown = false;
-    private Suwako suwako1;
 
-    public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap,
-                     HashMap<String, Integer> soundMap, int stageNum) {
+    public GameLogic(GameView gameView, HashMap<String, Bitmap> bmpHashMap, int stageNum) {
         this.gameView = gameView;
         this.bmpHashMap = bmpHashMap;
-        this.soundMap = soundMap;
         this.stageNum = stageNum;
         this.initSprite();
     }
@@ -74,7 +71,7 @@ public class GameLogic {
         int suwakoX = boardPos.x + (boardSize.x - suwakoW) / 2;
         int suwakoY = boardPos.y - suwakoH;
 
-        this.suwako = new Suwako(this.bmpHashMap,this.soundMap,
+        this.suwako = new Suwako(this.bmpHashMap,
                 new Point(suwakoX, suwakoY),
                 new Point(suwakoW, suwakoH), this);
 
@@ -82,6 +79,16 @@ public class GameLogic {
         this.gameOverText = new JSprite(
                 this.bmpHashMap.get("game_over_text"),
                 new Point(0, SuwakoJumpActivity.DISPLAY_HEIGHT));
+
+        //初始化游戏暂停界面
+        this.pauseBoardOn = new JSprite(
+                this.bmpHashMap.get("pause_board_on"),
+                new Point(0, 0));
+        this.pauseBoardOn.hide();
+        this.pauseBoardOff = new JSprite(
+                this.bmpHashMap.get("pause_board_off"),
+                new Point(0, 0));
+        this.pauseBoardOff.hide();
 
         //初始化分数板
         this.scoreBoard = new ScoreBoard(
@@ -96,10 +103,11 @@ public class GameLogic {
                             -SuwakoJumpActivity.DISPLAY_HEIGHT / 2));
         }
 
-
         //添加精灵
         this.add(this.gameOverText);
         this.add(this.suwako);
+        this.add(this.pauseBoardOn);
+        this.add(this.pauseBoardOff);
         this.add(this.scoreBoard);
         if (this.tipsBoard != null) {
             this.add(this.tipsBoard);
@@ -206,47 +214,8 @@ public class GameLogic {
         for (int i = 0; i < this.boardsList.size(); i++) {
             this.boardsList.get(i).isUpMoving = true;
         }
-        SuwakoJumpActivity.SP.play(
-                this.soundMap.get("die"), 1, 1, 0, 0, 1);
-        //显示得分和最高分
-//        this.showResultScore();
+        SoundHelper.play(SoundHelper.SoundMap.get("die"), false);
     }
-
-    /*
-     * 在Gameover界面中显示得分和最高分
-     */
-    private void showResultScore() {
-        FileHelper fileHelper = new FileHelper(this.gameView.getContext());
-        String scoreStr = String.valueOf(this.gameScore) + "\n";
-        //将分数写入到排行榜文件中
-        fileHelper.writeFile("score1.dat", scoreStr);
-        //读取排行榜文件，找出最大分数
-        String readContent = fileHelper.readFile("score1.dat");
-        String[] scoreStrArray = readContent.split("\n");
-        int highScore = 0;
-        for (String s : scoreStrArray) {
-            int number = Integer.parseInt(s);
-            if (number > highScore) {
-                highScore = number;
-            }
-        }
-        Bitmap bmpNumber = this.bmpHashMap.get("number");
-        double xScale = SuwakoJumpActivity.X_SCALE_FACTOR;
-        double yScale = SuwakoJumpActivity.Y_SCALE_FACTOR;
-//        this.resultScoreSprite = new ScoreBoard(bmpNumber,
-//                new Point((int) (480 * 0.6 * xScale),
-//                        (int) (800 * 0.285 * yScale)));
-        this.resultScoreSprite.setFixedNumber(this.gameScore);
-        this.resultScoreSprite.setVisible(false);
-//        this.highScoreSprite = new ScoreBoard(bmpNumber,
-//                new Point((int) (480 * 0.6 * xScale),
-//                        (int) (800 * 0.34 * yScale)));
-        this.highScoreSprite.setFixedNumber(highScore);
-        this.highScoreSprite.setVisible(false);
-        this.add(resultScoreSprite);
-        this.add(highScoreSprite);
-    }
-
 
     public int getStageNum() {
         return this.stageNum;
@@ -266,6 +235,33 @@ public class GameLogic {
      */
     public boolean isGameOver() {
         return this.isGameOver;
+    }
+
+    /*
+     * 查询游戏是否暂停
+     * @return 游戏是否暂停
+     */
+    public boolean isPause() {
+        return this.isPause;
+    }
+
+    /*
+     * 暂停或恢复游戏
+     */
+    public void pauseResume() {
+        this.isPause = !this.isPause;
+        if (this.isPause) {
+            if (this.canPlaySound) {
+                this.pauseBoardOn.show();
+            }
+            else{
+                this.pauseBoardOff.show();
+            }
+            SoundHelper.play(SoundHelper.SoundMap.get("pause"), false);
+        } else {
+            this.pauseBoardOn.hide();
+            this.pauseBoardOff.hide();
+        }
     }
 
     /*
@@ -302,6 +298,13 @@ public class GameLogic {
         return this.tipsBoard.getRect();
     }
 
+    public Rect getPauseButtonRect() {
+        return new Rect(
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.45), 0,
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5458),
+                this.scoreBoard.getSize().y);
+    }
+
     /*
      * 获取结果分数板上的两个按钮矩形区域列表
      */
@@ -328,6 +331,19 @@ public class GameLogic {
                 (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.6812),
                 (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.69)));
         return rectsList;
+    }
+
+    public void turnVolumn() {
+        this.canPlaySound = SoundHelper.turnVolumn();
+        if (this.canPlaySound) {
+            SoundHelper.resume();
+            this.pauseBoardOn.show();
+            this.pauseBoardOff.hide();
+        } else {
+            SoundHelper.pause();
+            this.pauseBoardOn.hide();
+            this.pauseBoardOff.show();
+        }
     }
 
     /*

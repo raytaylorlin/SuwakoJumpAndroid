@@ -1,41 +1,45 @@
 package com.raytaylorlin.SuwakoJump.View;
 
 import android.graphics.*;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import com.raytaylorlin.SuwakoJump.*;
 import com.raytaylorlin.SuwakoJump.Lib.ImageHelper;
 import com.raytaylorlin.SuwakoJump.Lib.JSprite;
+import com.raytaylorlin.SuwakoJump.Lib.SoundHelper;
 import com.raytaylorlin.SuwakoJump.Lib.TutorialThread;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameView extends CommonView implements SurfaceHolder.Callback {
-    //背景图片
+    private static final int MSG_NEXT_STAGE = 0;
+    private static final int MSG_RESTART = 1;
+    private static final int MSG_SELECT_STAGE = 2;
+
+    //图片资源
     private ArrayList<Bitmap> bmpBackgroundList;
     private Bitmap bmpBackground1, bmpBackground2, bmpBackground3, bmpBackground4,
             bmpScoreBoard, bmpSuwakoJump, bmpSuwakoWin,
             bmpGameOverText, bmpResultBoard;
+    private Bitmap bmpPauseBoardOn, bmpPauseBoardOff;
     private Bitmap bmpTipsBoard1, bmpTipsBoard2,
             bmpTipsBoard3, bmpTipsBoard4, bmpTipsBoard5;
     private Bitmap bmpItemSpring, bmpStarLevel;
     private HashMap<String, Bitmap> bmpHashMap;
 
-
-    private HashMap<String, Integer> soundMap = new HashMap<String, Integer>();
-
+    //游戏更新线程
+    private TutorialThread gameThread;
+    //游戏逻辑
     private GameLogic gameLogic;
 
     public GameView(SuwakoJumpActivity mainActivity, int stageNum) {
         super(mainActivity);
         this.initSound();
-        this.gameLogic = new GameLogic(this, this.bmpHashMap, this.soundMap,stageNum);
-        TutorialThread gameThread = new GameViewThread(getHolder(), this);
-        gameThread.start();
+        this.gameLogic = new GameLogic(this, this.bmpHashMap, stageNum);
+        this.gameThread = new GameViewThread(getHolder(), this);
+        this.gameThread.start();
         this.viewIndex = SuwakoJumpActivity.GAME_VIEW_INDEX;
     }
 
@@ -73,6 +77,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 R.drawable.tips_board5);
         this.bmpResultBoard = BitmapFactory.decodeResource(getResources(),
                 R.drawable.result_board);
+        this.bmpPauseBoardOn = BitmapFactory.decodeResource(getResources(),
+                R.drawable.pause_board_on);
+        this.bmpPauseBoardOff = BitmapFactory.decodeResource(getResources(),
+                R.drawable.pause_board_off);
         this.bmpStarLevel = BitmapFactory.decodeResource(getResources(),
                 R.drawable.star_level);
 
@@ -109,6 +117,8 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpTipsBoard4 = ImageHelper.adjustScaleImage(this.bmpTipsBoard4);
         this.bmpTipsBoard5 = ImageHelper.adjustScaleImage(this.bmpTipsBoard5);
         this.bmpResultBoard = ImageHelper.adjustScaleImage(this.bmpResultBoard);
+        this.bmpPauseBoardOn = ImageHelper.adjustScaleImage(this.bmpPauseBoardOn);
+        this.bmpPauseBoardOff = ImageHelper.adjustScaleImage(this.bmpPauseBoardOff);
         this.bmpStarLevel = ImageHelper.adjustScaleImage(this.bmpStarLevel);
 
         //建立字符串和图片的映射
@@ -128,6 +138,8 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpHashMap.put("tips_board4", this.bmpTipsBoard4);
         this.bmpHashMap.put("tips_board5", this.bmpTipsBoard5);
         this.bmpHashMap.put("result_board", this.bmpResultBoard);
+        this.bmpHashMap.put("pause_board_on", this.bmpPauseBoardOn);
+        this.bmpHashMap.put("pause_board_off", this.bmpPauseBoardOff);
         this.bmpHashMap.put("star_level", this.bmpStarLevel);
     }
 
@@ -136,17 +148,17 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
 
     }
 
-    private void initSound(){
-        this.soundMap.put("jump",
-                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.jump, 1));
-        this.soundMap.put("jump2",
-                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.jump2, 1));
-        this.soundMap.put("land",
-                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.land, 1));
-        this.soundMap.put("die",
-                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.die, 1));
-        this.soundMap.put("broken",
-                SuwakoJumpActivity.SP.load(this.getContext(), R.raw.broken, 1));
+    private void initSound() {
+        SoundHelper.SoundMap.put("jump",
+                SoundHelper.load(this.getContext(), R.raw.jump));
+        SoundHelper.SoundMap.put("jump2",
+                SoundHelper.load(this.getContext(), R.raw.jump2));
+        SoundHelper.SoundMap.put("die",
+                SoundHelper.load(this.getContext(), R.raw.die));
+        SoundHelper.SoundMap.put("broken",
+                SoundHelper.load(this.getContext(), R.raw.broken));
+        SoundHelper.SoundMap.put("pause",
+                SoundHelper.load(this.getContext(), R.raw.pause));
     }
 
     public void onDraw(Canvas canvas) {
@@ -181,17 +193,11 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 //按下Restart按钮事件
                 if (x > btnRestartRect.left && x < btnRestartRect.right
                         && y > btnRestartRect.top && y < btnRestartRect.bottom) {
-                    Message msg = new Message();
-                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
-                    msg.arg2 = this.gameLogic.getStageNum();
-                    this.mainActivity.myHandler.sendMessage(msg);
+                    this.changeNextView(MSG_RESTART);
                     //按下NextStage按钮事件
                 } else if (x > btnNextStageRect.left && x < btnNextStageRect.right
                         && y > btnNextStageRect.top && y < btnNextStageRect.bottom) {
-                    Message msg = new Message();
-                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
-                    msg.arg2 = this.gameLogic.getStageNum() + 1;
-                    this.mainActivity.myHandler.sendMessage(msg);
+                    this.changeNextView(MSG_NEXT_STAGE);
                 }
             }
             //游戏结束阶段的触摸屏事件检测
@@ -202,19 +208,34 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
                 //按下Restart按钮事件
                 if (x > btnRestartRect.left && x < btnRestartRect.right
                         && y > btnRestartRect.top && y < btnRestartRect.bottom) {
-                    Message msg = new Message();
-                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
-                    msg.arg2 = this.gameLogic.getStageNum();
-                    this.mainActivity.myHandler.sendMessage(msg);
+                    this.changeNextView(MSG_RESTART);
                     //按下SelectStage按钮事件
                 } else if (x > btnSelectRect.left && x < btnSelectRect.right
                         && y > btnSelectRect.top && y < btnSelectRect.bottom) {
-                    Message msg = new Message();
-                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW;
-                    this.mainActivity.myHandler.sendMessage(msg);
+                    this.changeNextView(MSG_SELECT_STAGE);
                 }
             } else {
-                this.gameLogic.setSuwakoAttack(new Point((int) x, (int) y));
+                //游戏没有结束时候的触摸屏事件检测
+                Rect btnPauseRect = this.gameLogic.getPauseButtonRect();
+                if (x > btnPauseRect.left && x < btnPauseRect.right
+                        && y > btnPauseRect.top && y < btnPauseRect.bottom) {
+                    this.gameLogic.pauseResume();
+                }
+                //游戏处于暂停阶段的触摸屏事件检测
+                if (this.gameLogic.isPause()) {
+                    ArrayList<Rect> btnPRectList = this.gameLogic.getGameoverButtonRect();
+                    btnRestartRect = btnPRectList.get(0);
+                    Rect btnSoundRect = btnPRectList.get(1);
+                    if (x > btnRestartRect.left && x < btnRestartRect.right
+                            && y > btnRestartRect.top && y < btnRestartRect.bottom) {
+                        this.changeNextView(MSG_RESTART);
+                        //按下SelectStage按钮事件
+                    } else if (x > btnSoundRect.left && x < btnSoundRect.right
+                            && y > btnSoundRect.top && y < btnSoundRect.bottom) {
+                        this.gameLogic.turnVolumn();
+                    }
+                }
+//                this.gameLogic.setSuwakoAttack(new Point((int) x, (int) y));
             }
         }
         return super.onTouchEvent(event);//调用基类的方法
@@ -222,10 +243,35 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
 
     @Override
     public void update() {
-        this.gameLogic.update();
+        if (!this.gameLogic.isPause()) {
+            this.gameLogic.update();
+        }
     }
 
     public float getSensorX() {
         return this.mainActivity.getSensorX();
+    }
+
+    private void changeNextView(int msgType) {
+        //停止当前游戏线程刷新
+        this.gameThread.stop();
+        Message msg = new Message();
+        switch (msgType) {
+            case MSG_NEXT_STAGE:
+                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
+                msg.arg2 = this.gameLogic.getStageNum() + 1;
+                if (msg.arg2 >= 21) {
+                    msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW;
+                }
+                break;
+            case MSG_RESTART:
+                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW;
+                msg.arg2 = this.gameLogic.getStageNum();
+                break;
+            case MSG_SELECT_STAGE:
+                msg.arg1 = SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW;
+                break;
+        }
+        this.mainActivity.myHandler.sendMessage(msg);
     }
 }

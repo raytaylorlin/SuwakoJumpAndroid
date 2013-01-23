@@ -227,6 +227,11 @@ public class StageMap {
                         newBoard = new NormalBoard(bmpNormalBoard, pos);
                     } else if (r < 0.6) {
                         newBoard = new BrokenBoard(bmpBrokenBoard, pos);
+                        if (r < 0.7) {
+                            boardList.add(new NormalBoard(bmpNormalBoard,
+                                    new Point(getBoardX(), by -
+                                            RandomHelper.getRandom(BASE_INTERVAL / 2, BASE_INTERVAL))));
+                        }
                     } else if (r < 0.8) {
                         newBoard = new VanishBoard(bmpVanishBoard, pos);
                     } else {

@@ -19,14 +19,14 @@ import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
+import com.raytaylorlin.SuwakoJump.Lib.SoundHelper;
 import com.raytaylorlin.SuwakoJump.View.*;
 
 import java.util.Timer;
 
 public class SuwakoJumpActivity extends Activity {
-    private CommonView currentView;
     private CommonView selectStageView, welcomeView,
-            gameView,loadingView;
+            gameView, loadingView;
 
     private static Bitmap StandardBitmap;
     //重力加速度感应管理器
@@ -34,7 +34,7 @@ public class SuwakoJumpActivity extends Activity {
     private float sensorX;
 
     boolean isSound = true;//是否播放声音
-    public static SoundPool SP = new SoundPool(5, AudioManager.STREAM_MUSIC, 100);
+//    public static SoundPool SP = new SoundPool(9, AudioManager.STREAM_MUSIC, 100);
     public static final int MSG_REFRESH = 0x000001;
     public static final int MSG_CHANGE_TO_GAMEVIEW = 0x000002;
     public static final int MSG_CHANGE_TO_SELECTVIEW = 0x000003;
@@ -79,6 +79,8 @@ public class SuwakoJumpActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //设置实际宽高值和缩放比例
         StandardBitmap = BitmapFactory.decodeResource(getResources(),
@@ -106,9 +108,9 @@ public class SuwakoJumpActivity extends Activity {
         sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_GAME);
 
         //初始化游戏界面
-//        this.loadingView = new LoadingView(this, 1);
         this.welcomeView = new WelcomeView(this);
-        this.setContentView(this.welcomeView);//设置加载界面
+        this.setContentView(this.welcomeView);
+
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -132,6 +134,7 @@ public class SuwakoJumpActivity extends Activity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     finish();
+                                    SoundHelper.stop();
                                 }
                             }).show();
             return true;
@@ -150,7 +153,6 @@ public class SuwakoJumpActivity extends Activity {
      */
     public void changeView(CommonView targetView) {
         this.setContentView(targetView);
-        this.currentView = targetView;
         this.CURRENT_VIEW_INDEX = targetView.getViewIndex();
     }
 
