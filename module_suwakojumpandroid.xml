@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_suwakojumpandroid" default="compile.module.suwakojumpandroid">
+  <dirname property="module.suwakojumpandroid.basedir" file="${ant.file.module_suwakojumpandroid}"/>
+  
+  <property name="module.jdk.home.suwakojumpandroid" value="${jdk.home.android_2.1_platform}"/>
+  <property name="module.jdk.bin.suwakojumpandroid" value="${jdk.bin.android_2.1_platform}"/>
+  <property name="module.jdk.classpath.suwakojumpandroid" value="jdk.classpath.android_2.1_platform"/>
+  
+  <property name="compiler.args.suwakojumpandroid" value="${compiler.args}"/>
+  
+  <property name="suwakojumpandroid.output.dir" value="${module.suwakojumpandroid.basedir}/out/production/SuwakoJumpAndroid"/>
+  <property name="suwakojumpandroid.testoutput.dir" value="${module.suwakojumpandroid.basedir}/out/test/SuwakoJumpAndroid"/>
+  
+  <path id="suwakojumpandroid.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="suwakojumpandroid.module.production.classpath">
+    <path refid="${module.jdk.classpath.suwakojumpandroid}"/>
+    <path refid="library.cocos2d-android.classpath"/>
+  </path>
+  
+  <path id="suwakojumpandroid.runtime.production.module.classpath">
+    <pathelement location="${suwakojumpandroid.output.dir}"/>
+    <path refid="library.cocos2d-android.classpath"/>
+  </path>
+  
+  <path id="suwakojumpandroid.module.classpath">
+    <path refid="${module.jdk.classpath.suwakojumpandroid}"/>
+    <pathelement location="${suwakojumpandroid.output.dir}"/>
+    <path refid="library.cocos2d-android.classpath"/>
+  </path>
+  
+  <path id="suwakojumpandroid.runtime.module.classpath">
+    <pathelement location="${suwakojumpandroid.testoutput.dir}"/>
+    <pathelement location="${suwakojumpandroid.output.dir}"/>
+    <path refid="library.cocos2d-android.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.suwakojumpandroid">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.suwakojumpandroid">
+    <patternset refid="compiler.excluded"/>
+    <patternset refid="excluded.from.module.suwakojumpandroid"/>
+  </patternset>
+  
+  <path id="suwakojumpandroid.module.sourcepath">
+    <dirset dir="${module.suwakojumpandroid.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.suwakojumpandroid" depends="compile.module.suwakojumpandroid.production,compile.module.suwakojumpandroid.tests" description="Compile module SuwakoJumpAndroid"/>
+  
+  <target name="compile.module.suwakojumpandroid.production" depends="register.custom.compilers" description="Compile module SuwakoJumpAndroid; production classes">
+    <mkdir dir="${suwakojumpandroid.output.dir}"/>
+    <javac2 destdir="${suwakojumpandroid.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.suwakojumpandroid}/javac">
+      <compilerarg line="${compiler.args.suwakojumpandroid}"/>
+      <bootclasspath refid="suwakojumpandroid.module.bootclasspath"/>
+      <classpath refid="suwakojumpandroid.module.production.classpath"/>
+      <src refid="suwakojumpandroid.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.suwakojumpandroid"/>
+    </javac2>
+    
+    <copy todir="${suwakojumpandroid.output.dir}">
+      <fileset dir="${module.suwakojumpandroid.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+        <patternset refid="excluded.from.compilation.suwakojumpandroid"/>
+      </fileset>
+      <fileset dir="${module.suwakojumpandroid.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+        <patternset refid="excluded.from.compilation.suwakojumpandroid"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.suwakojumpandroid.tests" depends="register.custom.compilers,compile.module.suwakojumpandroid.production" description="compile module SuwakoJumpAndroid; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.suwakojumpandroid" description="cleanup module">
+    <delete dir="${suwakojumpandroid.output.dir}"/>
+    <delete dir="${suwakojumpandroid.testoutput.dir}"/>
+  </target>
+</project>

@@ -21,8 +21,7 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
         super(mainActivity);
         this.getHolder().addCallback(this);
         this.mainActivity = mainActivity;
-        //初始化重绘线程
-        this.tutorialThread = new TutorialThread(this.getHolder(), this);
+
         //加载画笔和字体资源
         this.mainPaint = new Paint();
         this.mainPaint.setAntiAlias(true);
@@ -63,6 +62,10 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
      * surface创建时被调用
      */
     public void surfaceCreated(SurfaceHolder holder) {
+        //初始化重绘线程
+        if (this.tutorialThread == null) {
+            this.tutorialThread = new TutorialThread(this.getHolder(), this);
+        }
         //设置线程标志位
         this.tutorialThread.setRunning(true);
         //启动线程
@@ -74,7 +77,7 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
      */
     public void surfaceDestroyed(SurfaceHolder holder) {
         boolean retry = true;//循环标志位
-        tutorialThread.setRunning(false);//设置循环标志位
+        this.tutorialThread.setRunning(false);//设置循环标志位
         while (retry) {
             try {
                 tutorialThread.join();//等待线程结束
@@ -82,6 +85,7 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
             } catch (InterruptedException e) {
             }
         }
+        this.tutorialThread = null;
     }
 
     public int getViewIndex() {

@@ -34,7 +34,7 @@ public class SuwakoJumpActivity extends Activity {
     private float sensorX;
 
     boolean isSound = true;//是否播放声音
-//    public static SoundPool SP = new SoundPool(9, AudioManager.STREAM_MUSIC, 100);
+    //    public static SoundPool SP = new SoundPool(9, AudioManager.STREAM_MUSIC, 100);
     public static final int MSG_REFRESH = 0x000001;
     public static final int MSG_CHANGE_TO_GAMEVIEW = 0x000002;
     public static final int MSG_CHANGE_TO_SELECTVIEW = 0x000003;
@@ -138,9 +138,13 @@ public class SuwakoJumpActivity extends Activity {
                                 }
                             }).show();
             return true;
+        } else if (keyCode == KeyEvent.KEYCODE_HOME) {
+
+            return true;
         } else {
             return super.onKeyDown(keyCode, event);
         }
+
     }
 
     public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event) {
