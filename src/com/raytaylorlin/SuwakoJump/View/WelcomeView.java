@@ -1,23 +1,16 @@
 package com.raytaylorlin.SuwakoJump.View;
 
-import java.util.HashMap;
-
 import android.content.Context;
 import android.graphics.*;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import com.raytaylorlin.SuwakoJump.Lib.ImageHelper;
 import com.raytaylorlin.SuwakoJump.Lib.SoundHelper;
-import com.raytaylorlin.SuwakoJump.Sprites.StarLevel;
 import com.raytaylorlin.SuwakoJump.R;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
-    HashMap<Integer, Integer> soundPoolMap;
-
     //背景图片
     private Bitmap bmpBackground;
     //开始游戏按钮图片

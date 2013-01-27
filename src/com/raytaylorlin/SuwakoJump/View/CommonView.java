@@ -1,5 +1,6 @@
 package com.raytaylorlin.SuwakoJump.View;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -7,6 +8,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 import com.raytaylorlin.SuwakoJump.Lib.TutorialThread;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 public abstract class CommonView extends SurfaceView implements SurfaceHolder.Callback {
     //主activity的引用
@@ -16,6 +20,8 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
     //主画笔
     protected Paint mainPaint;
     protected int viewIndex;
+    protected HashMap<String, Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
+    ;
 
     public CommonView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
@@ -76,16 +82,28 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
      * surface销毁时被调用
      */
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;//循环标志位
-        this.tutorialThread.setRunning(false);//设置循环标志位
-        while (retry) {
+        boolean isRetrying = true;
+        this.tutorialThread.setRunning(false);
+        while (isRetrying) {
             try {
-                tutorialThread.join();//等待线程结束
-                retry = false;
+                //等待线程结束
+                tutorialThread.join();
+                isRetrying = false;
             } catch (InterruptedException e) {
             }
         }
         this.tutorialThread = null;
+    }
+
+    public void recycleBitmap(){
+        //释放bitmap占用的内存
+        Iterator<Bitmap> iBmp = this.bmpHashMap.values().iterator();
+        while (iBmp.hasNext()) {
+            Bitmap bmp = iBmp.next();
+            if(!bmp.isRecycled()){
+                bmp.recycle();
+            }
+        }
     }
 
     public int getViewIndex() {

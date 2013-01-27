@@ -6,7 +6,9 @@ import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 public class ImageHelper {
     public static Bitmap adjustScaleImage(Bitmap bitmap) {
         return Bitmap.createScaledBitmap(bitmap,
-                (int) (bitmap.getWidth() * SuwakoJumpActivity.X_SCALE_FACTOR),
-                (int) (bitmap.getHeight() * SuwakoJumpActivity.Y_SCALE_FACTOR), true);
+                (int) (Math.round(bitmap.getWidth() *
+                        SuwakoJumpActivity.X_SCALE_FACTOR)),
+                (int) (Math.round(bitmap.getHeight() *
+                        SuwakoJumpActivity.Y_SCALE_FACTOR)), true);
     }
 }

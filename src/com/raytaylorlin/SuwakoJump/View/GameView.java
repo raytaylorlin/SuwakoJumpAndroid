@@ -12,6 +12,7 @@ import com.raytaylorlin.SuwakoJump.Lib.TutorialThread;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class GameView extends CommonView implements SurfaceHolder.Callback {
     private static final int MSG_NEXT_STAGE = 0;
@@ -27,25 +28,26 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     private Bitmap bmpTipsBoard1, bmpTipsBoard2,
             bmpTipsBoard3, bmpTipsBoard4, bmpTipsBoard5;
     private Bitmap bmpItemSpring, bmpStarLevel;
-    private HashMap<String, Bitmap> bmpHashMap;
+
 
     //游戏更新线程
     private TutorialThread gameThread;
     //游戏逻辑
     private GameLogic gameLogic;
 
-    public GameView(SuwakoJumpActivity mainActivity, int stageNum) {
+    public GameView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
         this.initSound();
+    }
+
+    public void initialize(int stageNum){
         this.gameLogic = new GameLogic(this, this.bmpHashMap, stageNum);
         this.gameThread = new GameViewThread(getHolder(), this);
         this.gameThread.start();
-        this.viewIndex = SuwakoJumpActivity.GAME_VIEW_INDEX;
     }
 
     @Override
     protected void initBitmap() {
-        this.bmpHashMap = new HashMap<String, Bitmap>();
         //加载图片资源
         this.bmpBackground1 = BitmapFactory.decodeResource(getResources(),
                 R.drawable.game_view_background1);
@@ -127,6 +129,10 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.bmpBackgroundList.add(this.bmpBackground2);
         this.bmpBackgroundList.add(this.bmpBackground3);
         this.bmpBackgroundList.add(this.bmpBackground4);
+        this.bmpHashMap.put("background1", this.bmpBackground1);
+        this.bmpHashMap.put("background2", this.bmpBackground2);
+        this.bmpHashMap.put("background3", this.bmpBackground3);
+        this.bmpHashMap.put("background4", this.bmpBackground4);
         this.bmpHashMap.put("score_board", this.bmpScoreBoard);
         this.bmpHashMap.put("suwako_jump", this.bmpSuwakoJump);
         this.bmpHashMap.put("suwako_win", this.bmpSuwakoWin);
@@ -255,6 +261,8 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     private void changeNextView(int msgType) {
         //停止当前游戏线程刷新
         this.gameThread.stop();
+
+        //发送消息
         Message msg = new Message();
         switch (msgType) {
             case MSG_NEXT_STAGE:

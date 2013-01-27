@@ -15,9 +15,6 @@ import com.raytaylorlin.SuwakoJump.R;
 import com.raytaylorlin.SuwakoJump.SuwakoJumpActivity;
 
 public class SelectStageView extends CommonView implements SurfaceHolder.Callback {
-    SoundPool soundPool;//声音
-    HashMap<Integer, Integer> soundPoolMap;
-
     //背景图片
     private Bitmap bmpBackground;
     private Rect[][] stageRectList;
@@ -25,9 +22,6 @@ public class SelectStageView extends CommonView implements SurfaceHolder.Callbac
     public SelectStageView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);
         this.viewIndex = SuwakoJumpActivity.WELCOME_VIEW_INDEX;
-//        initSounds();//初始化声音
-
-//        playSound(1);
     }
 
     @Override
@@ -35,6 +29,7 @@ public class SelectStageView extends CommonView implements SurfaceHolder.Callbac
         this.bmpBackground = BitmapFactory.decodeResource(getResources(),
                 R.drawable.select_stage_view);
         this.bmpBackground = ImageHelper.adjustScaleImage(this.bmpBackground);
+        this.bmpHashMap.put("background", this.bmpBackground);
     }
 
     @Override
@@ -54,20 +49,6 @@ public class SelectStageView extends CommonView implements SurfaceHolder.Callbac
                 );
             }
         }
-    }
-
-    public void initSounds() {//初始化声音的方法
-        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);//初始化SoundPool
-        soundPoolMap = new HashMap<Integer, Integer>();//初始化   HashMap
-//        soundPoolMap.put(1, soundPool.load(getContext(), R.raw.welcome1, 1));
-    }
-
-    public void playSound(int sound) {//播放声音的方法
-        AudioManager mgr = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
-        float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);//设置最大音量
-        float volume = streamVolumeCurrent / streamVolumeMax;   //设备的音量
-        soundPool.play(soundPoolMap.get(sound), volume, volume, 1, 0, 1f);//播放
     }
 
     public void onDraw(Canvas canvas) {

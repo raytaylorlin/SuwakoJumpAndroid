@@ -129,7 +129,8 @@ public class Suwako extends JSprite {
      */
     public void setMoveStepX(float sensorX) {
         if (this.status != STATUS_WIN) {
-            this.moveStepX = -((int) sensorX) * 6;
+            this.moveStepX = -(int) (sensorX * 5 *
+                    (SuwakoJumpActivity.DISPLAY_WIDTH / 480.0));
         }
     }
 

@@ -25,16 +25,15 @@ import com.raytaylorlin.SuwakoJump.View.*;
 import java.util.Timer;
 
 public class SuwakoJumpActivity extends Activity {
-    private CommonView selectStageView, welcomeView,
-            gameView, loadingView;
+    private CommonView selectStageView, welcomeView;
+    private GameView gameView;
+    private LoadingView loadingView;
 
     private static Bitmap StandardBitmap;
     //重力加速度感应管理器
     private SensorManager sensorManager;
     private float sensorX;
 
-    boolean isSound = true;//是否播放声音
-    //    public static SoundPool SP = new SoundPool(9, AudioManager.STREAM_MUSIC, 100);
     public static final int MSG_REFRESH = 0x000001;
     public static final int MSG_CHANGE_TO_GAMEVIEW = 0x000002;
     public static final int MSG_CHANGE_TO_SELECTVIEW = 0x000003;
@@ -56,16 +55,19 @@ public class SuwakoJumpActivity extends Activity {
             SuwakoJumpActivity _this = SuwakoJumpActivity.this;
             switch (msg.arg1) {
                 case SuwakoJumpActivity.MSG_CHANGE_TO_LOADINGVIEW:
-                    _this.loadingView = new LoadingView(_this, msg.arg2);
+//                    _this.loadingView = new LoadingView(_this);
+                    _this.loadingView.setStage(msg.arg2);
                     _this.changeView(_this.loadingView);
                     break;
                 case SuwakoJumpActivity.MSG_CHANGE_TO_SELECTVIEW:
-                    _this.selectStageView = new SelectStageView(_this);
+//                    _this.selectStageView = new SelectStageView(_this);
                     _this.changeView(_this.selectStageView);
                     break;
                 case SuwakoJumpActivity.MSG_CHANGE_TO_GAMEVIEW:
-                    _this.gameView = new GameView(_this, msg.arg2);
+//                    _this.gameView = new GameView(_this, msg.arg2);
+                    _this.gameView.initialize(msg.arg2);
                     _this.changeView(_this.gameView);
+//                    _this.gameView.recycleBitmap();
                     break;
             }
             super.handleMessage(msg);
@@ -108,9 +110,11 @@ public class SuwakoJumpActivity extends Activity {
         sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_GAME);
 
         //初始化游戏界面
+        this.loadingView = new LoadingView(this);
         this.welcomeView = new WelcomeView(this);
+        this.selectStageView = new SelectStageView(this);
+        this.gameView = new GameView(this);
         this.setContentView(this.welcomeView);
-
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -133,13 +137,10 @@ public class SuwakoJumpActivity extends Activity {
                     .setPositiveButton("是",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    finish();
+                                    System.exit(0);
                                     SoundHelper.stop();
                                 }
                             }).show();
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_HOME) {
-
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
