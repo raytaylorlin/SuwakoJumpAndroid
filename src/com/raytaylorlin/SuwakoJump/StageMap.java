@@ -32,45 +32,6 @@ public class StageMap {
         BASE_INTERVAL = bmpHashMap.get("suwako_jump").getHeight() / 3;
     }
 
-    /*
-     * 获取新类型的板子
-     * @param y
-     * @return 新产生的板子
-     */
-    private Board getNewTypeBoard(int y) {
-        Board newBoard = null;
-        Item newItem = null;
-        //随机计算板子的位置
-        int boardX = RandomHelper.getRandom(DW - BOARD_X);
-        int boardY = SuwakoJumpActivity.DISPLAY_HEIGHT - (y + 1) * 80;
-//        int boardY = MainGame.GAME_FIELD_HEIGHT + MainGame.GAME_SCORE_BAR_HEIGHT - (y + 1) * 40;
-
-        float boardTypeFloat = RandomHelper.getRandom();
-//        newBoard = new NormalBoard(bmpBoard, new Point(boardX, boardY));
-        if (boardTypeFloat < 0.1) {
-//            newBoard = new VanishBoard(BmpBoard, new Point(boardX, boardY));
-        } else if (boardTypeFloat < 0.3) {
-//            newBoard = new BrokenBoard(BmpBoard, new Point(boardX, boardY));
-        } else if (boardTypeFloat < 0.5) {
-            boolean isVertical = RandomHelper.getRandom() < 0.5;
-//            newBoard = new MovingBoard(BmpBoard, new Point(boardX, boardY), isVertical);
-        } else {
-//            newBoard = new NormalBoard(BmpBoard, new Point(boardX, boardY));
-        }
-
-        //设置道具
-        float itemTypeFloat = RandomHelper.getRandom();
-        Point bPos = newBoard.getPosition();
-        Point bSize = newBoard.getSize();
-//        newItem = new Spring(bmpItemSpring,
-//                new Point(RandomHelper.getRandom(bPos.x,
-//                        bPos.x + bSize.x - bmpItemSpring.getWidth()),
-//                        bPos.y - bmpItemSpring.getHeight()));
-        newBoard.setItem(newItem);
-
-        return newBoard;
-    }
-
     private static int getBoardX() {
         return RandomHelper.getRandom(DW - BOARD_X);
     }
@@ -83,7 +44,6 @@ public class StageMap {
                 TOTAL_NUM = 50;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
-//                    int by_offset = RandomHelper.getRandom(BASE_INTERVAL);
                     int by_offset = 0;
                     Point pos = new Point(getBoardX(), by - by_offset);
                     Board newBoard = new NormalBoard(bmpNormalBoard, pos);
@@ -178,11 +138,11 @@ public class StageMap {
                     Point pos = new Point(getBoardX(), by - by_offset);
                     Board newBoard;
                     float r = RandomHelper.getRandom();
-                    if (r < 0.4) {
+                    if (r < 0.3) {
                         newBoard = new NormalBoard(bmpNormalBoard, pos);
-                    } else if (r < 0.6) {
+                    } else if (r < 0.5) {
                         newBoard = new BrokenBoard(bmpBrokenBoard, pos);
-                    } else if (r < 0.8) {
+                    } else if (r < 0.7) {
                         newBoard = new VanishBoard(bmpVanishBoard, pos);
                     } else {
                         boolean isVertical = RandomHelper.getRandom() < 0.5;
