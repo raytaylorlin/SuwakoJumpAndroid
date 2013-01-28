@@ -7,7 +7,7 @@ import com.raytaylorlin.SuwakoJump.View.CommonView;
 
 public class TutorialThread extends Thread {
     //睡眠的毫秒数
-    private int sleepSpan = 1000/ SuwakoJumpActivity.GAME_FRAME_RATE;
+    private int sleepSpan = 1000 / SuwakoJumpActivity.GAME_FRAME_RATE;
     //
     protected SurfaceHolder surfaceHolder;
     //调用界面的引用
@@ -29,10 +29,12 @@ public class TutorialThread extends Thread {
         while (this.isRunning) {
             canvas = null;
             try {
-                // 锁定整个画布，在内存要求比较高的情况下，建议参数不要为null
+                //锁定整个画布，在内存要求比较高的情况下，建议参数不要为null
                 canvas = this.surfaceHolder.lockCanvas(null);
-                synchronized (this.surfaceHolder) {//同步
-                    this.calledView.onDraw(canvas);//调用绘制方法
+                synchronized (this.surfaceHolder) {
+                    if (canvas != null) {
+                        this.calledView.onDraw(canvas);
+                    }
                 }
             } finally {
                 if (canvas != null) {
@@ -53,7 +55,7 @@ public class TutorialThread extends Thread {
     /*
      * 线程其它处理操作，供覆写
      */
-    protected void threadHandle(){
+    protected void threadHandle() {
         this.calledView.update();
     }
 

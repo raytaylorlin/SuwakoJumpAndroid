@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.raytaylorlin.SuwakoJump"
-          android:versionCode="1"
-          android:versionName="1.0">
+          android:versionCode="2"
+          android:versionName="2.0">
     <uses-sdk android:minSdkVersion="5"/>
+    <supports-screens android:resizeable="false"
+                      android:normalScreens="true"
+                      android:largeScreens="true"/>
     <application android:label="@string/app_name" android:icon="@drawable/icon">
         <activity android:name=".SuwakoJumpActivity"
                   android:label="@string/app_name"

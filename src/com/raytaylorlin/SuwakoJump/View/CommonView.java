@@ -21,7 +21,6 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
     protected Paint mainPaint;
     protected int viewIndex;
     protected HashMap<String, Bitmap> bmpHashMap = new HashMap<String, Bitmap>();
-    ;
 
     public CommonView(SuwakoJumpActivity mainActivity) {
         super(mainActivity);

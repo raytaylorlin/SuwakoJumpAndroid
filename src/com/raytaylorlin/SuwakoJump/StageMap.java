@@ -179,6 +179,9 @@ public class StageMap {
                 TOTAL_NUM = 20 * stageNum;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
+                    if (i > TOTAL_NUM / 2) {
+                        by = DH - (i + 1) * BASE_INTERVAL * 3 / 2;
+                    }
                     int by_offset = RandomHelper.getRandom(BASE_INTERVAL / 2);
                     Point pos = new Point(getBoardX(), by - by_offset);
                     Board newBoard;

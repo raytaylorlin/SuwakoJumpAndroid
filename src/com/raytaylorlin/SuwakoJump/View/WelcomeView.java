@@ -38,13 +38,15 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
 
     public void initSounds() {//初始化声音的方法
         Context context = this.getContext();
-//        SoundHelper.SoundMap.put("bgm",
-//                SoundHelper.load(this.getContext(), R.raw.bgm));
         SoundHelper.play(context, R.raw.bgm);
     }
 
     public void onDraw(Canvas canvas) {
-        canvas.drawBitmap(this.bmpBackground, 0, 0, mainPaint);
+        try {
+            canvas.drawBitmap(this.bmpBackground, 0, 0, mainPaint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*

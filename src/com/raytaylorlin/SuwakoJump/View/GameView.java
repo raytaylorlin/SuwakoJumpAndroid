@@ -259,9 +259,6 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
     }
 
     private void changeNextView(int msgType) {
-        //停止当前游戏线程刷新
-        this.gameThread.stop();
-
         //发送消息
         Message msg = new Message();
         switch (msgType) {
