@@ -125,22 +125,19 @@ public class SuwakoJumpActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // 按下键盘上返回按钮
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            new AlertDialog.Builder(this)
-                    .setTitle("退出游戏")
-                    .setMessage("确定要退出游戏吗？")
-                    .setNegativeButton("否",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // TODO Auto-generated method stub
-                                }
-                            })
-                    .setPositiveButton("是",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    System.exit(0);
-                                    SoundHelper.stop();
-                                }
-                            }).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("退出游戏");
+            builder.setMessage("确定要退出游戏吗？");
+            builder.setNegativeButton("否", null);
+            builder.setPositiveButton("是",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            System.exit(0);
+                            SoundHelper.stop();
+                        }
+                    });
+            builder.show();
             return true;
         } else {
             return super.onKeyDown(keyCode, event);

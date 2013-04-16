@@ -29,7 +29,7 @@ public class StageMap {
         bmpFlagBoard = bmpHashMap.get("board_flag");
         bmpItemSpring = bmpHashMap.get("item_spring");
         BOARD_X = bmpHashMap.get("board_normal").getWidth();
-        BASE_INTERVAL = bmpHashMap.get("suwako_jump").getHeight() / 3;
+        BASE_INTERVAL = bmpHashMap.get("suwako_jump").getHeight() / 4;
     }
 
     private static int getBoardX() {
@@ -176,12 +176,12 @@ public class StageMap {
             case 18:
             case 19:
             case 20:
-                TOTAL_NUM = 20 * stageNum;
+                TOTAL_NUM = 10 * stageNum;
                 for (int i = 0; i < TOTAL_NUM; i++) {
                     int by = DH - (i + 1) * BASE_INTERVAL;
-                    if (i > TOTAL_NUM / 2) {
-                        by = DH - (i + 1) * BASE_INTERVAL * 3 / 2;
-                    }
+//                    if (i > TOTAL_NUM / 2) {
+//                        by = DH - (i + 1) * BASE_INTERVAL * 3 / 2;
+//                    }
                     int by_offset = RandomHelper.getRandom(BASE_INTERVAL / 2);
                     Point pos = new Point(getBoardX(), by - by_offset);
                     Board newBoard;

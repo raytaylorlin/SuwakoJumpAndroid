@@ -99,8 +99,7 @@ public class GameLogic {
         if (this.stageNum <= 5) {
             this.tipsBoard = new TipsBoard(
                     this.bmpHashMap.get("tips_board" + this.stageNum),
-                    new Point((int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.125),
-                            -SuwakoJumpActivity.DISPLAY_HEIGHT / 2));
+                    new Point(0, -SuwakoJumpActivity.DISPLAY_HEIGHT / 2));
         }
 
         //添加精灵
@@ -134,7 +133,7 @@ public class GameLogic {
                     //设置所有板子下降
                     for (int i = 0; i < this.boardsList.size(); i++) {
                         Board checkBoard = this.boardsList.get(i);
-                        checkBoard.setFallingDown(increaseScore, this.suwako.getFallingTime());
+                        checkBoard.setFallingDown(increaseScore / 3 * 2, this.suwako.getFallingTime());
                         this.boardsFallingDown = true;
                     }
                 }
@@ -253,8 +252,7 @@ public class GameLogic {
         if (this.isPause) {
             if (this.canPlaySound) {
                 this.pauseBoardOn.show();
-            }
-            else{
+            } else {
                 this.pauseBoardOff.show();
             }
             SoundHelper.play(SoundHelper.SoundMap.get("pause"), false);
@@ -300,9 +298,10 @@ public class GameLogic {
 
     public Rect getPauseButtonRect() {
         return new Rect(
-                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.45), 0,
-                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5458),
-                this.scoreBoard.getSize().y);
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.4854),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.025),
+                (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5625),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.07));
     }
 
     /*
@@ -322,14 +321,14 @@ public class GameLogic {
         ArrayList<Rect> rectsList = new ArrayList<Rect>();
         rectsList.add(new Rect(
                 (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
-                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.5175),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.4675),
                 (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.6812),
-                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.575)));
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.525)));
         rectsList.add(new Rect(
                 (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.3063),
-                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.62),
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.57),
                 (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.6812),
-                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.69)));
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.64)));
         return rectsList;
     }
 

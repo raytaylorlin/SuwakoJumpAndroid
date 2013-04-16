@@ -75,7 +75,7 @@ public class ResultBoard extends JSprite {
     }
 
     private int calStarLevel() {
-        float BASE_TIME = 0.3f;
+        float BASE_TIME = 0.4f;
         float interval = new Date(this.intervalTime).getTime() / 100 / 10.0f;
         int starLevel = 1;
         float[] standardTime = {

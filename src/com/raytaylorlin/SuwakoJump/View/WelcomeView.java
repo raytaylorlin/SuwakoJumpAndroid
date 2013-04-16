@@ -56,10 +56,10 @@ public class WelcomeView extends CommonView implements SurfaceHolder.Callback {
         //屏幕被按下
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect btnStartGameRect = new Rect(
-                    (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.5458),
-                    (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.7687),
-                    (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.9208),
-                    (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.8387)
+                    (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.4645),
+                    (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.625),
+                    (int) (SuwakoJumpActivity.DISPLAY_WIDTH * 0.9458),
+                    (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.7187)
             );
             double x = event.getX();
             double y = event.getY();

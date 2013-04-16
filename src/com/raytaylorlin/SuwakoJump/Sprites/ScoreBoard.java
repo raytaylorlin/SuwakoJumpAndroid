@@ -20,7 +20,7 @@ public class ScoreBoard extends JSprite {
         super(image, drawPosition);
         drawInitPoint = drawPosition;
         this.scoreNumberImage = image;
-        this.stageNum=stageNum;
+        this.stageNum = stageNum;
         this.numberList.add(new ScoreNumber(image, drawInitPoint, 0));
     }
 
@@ -29,14 +29,18 @@ public class ScoreBoard extends JSprite {
             canvas.drawBitmap(this.drawImage, 0, 0, paint);
             Paint.FontMetrics fm = paint.getFontMetrics();
             int textOffset = (int) (fm.descent - fm.ascent);
-            String scoreText = "SCORE : " + this.showNumber;
-            String stageText = "STAGE : " + this.stageNum;
+
+            String scoreText = "SCORE: " + this.showNumber;
+            String strStage = ((this.stageNum - 1) / 5 + 1) + "-" +
+                    ((this.stageNum - 1) % 5 + 1);
+            String stageText = "STAGE: " + strStage;
+            paint.setColor(Color.argb(255, 245, 255, 134));
             canvas.drawText(scoreText,
-                    (int) (this.imageSize.x * 0.0208),
-                    (int) (this.imageSize.y * 0.05) + textOffset, paint);
+                    (int) (this.imageSize.x * 0.0396),
+                    (int) (this.imageSize.y * 0.08) + textOffset, paint);
             canvas.drawText(stageText,
-                    (int) (this.imageSize.x * 0.6),
-                    (int) (this.imageSize.y * 0.05) + textOffset, paint);
+                    (int) (this.imageSize.x * 0.6583),
+                    (int) (this.imageSize.y * 0.08) + textOffset, paint);
         }
     }
 

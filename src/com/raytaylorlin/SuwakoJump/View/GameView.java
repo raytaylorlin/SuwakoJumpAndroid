@@ -21,9 +21,9 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
 
     //图片资源
     private ArrayList<Bitmap> bmpBackgroundList;
-    private Bitmap bmpBackground1, bmpBackground2, bmpBackground3, bmpBackground4,
-            bmpScoreBoard, bmpSuwakoJump, bmpSuwakoWin,
-            bmpGameOverText, bmpResultBoard;
+    private Bitmap bmpBackground1, bmpBackground2, bmpBackground3, bmpBackground4;
+    private Bitmap bmpScoreBoard, bmpSuwakoJump, bmpSuwakoWin;
+    private Bitmap bmpGameOverText, bmpResultBoard;
     private Bitmap bmpPauseBoardOn, bmpPauseBoardOff;
     private Bitmap bmpTipsBoard1, bmpTipsBoard2,
             bmpTipsBoard3, bmpTipsBoard4, bmpTipsBoard5;
@@ -40,7 +40,7 @@ public class GameView extends CommonView implements SurfaceHolder.Callback {
         this.initSound();
     }
 
-    public void initialize(int stageNum){
+    public void initialize(int stageNum) {
         this.gameLogic = new GameLogic(this, this.bmpHashMap, stageNum);
         this.gameThread = new GameViewThread(getHolder(), this);
         this.gameThread.start();

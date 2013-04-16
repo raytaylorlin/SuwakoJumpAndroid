@@ -12,7 +12,7 @@ public class TipsBoard extends JSprite {
     @Override
     public void update(){
         if (this.drawPosition.y <
-                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.2412)) {
+                (int) (SuwakoJumpActivity.DISPLAY_HEIGHT * 0.15)) {
             this.drawPosition.y += this.imageSize.y / 10;
         }
     }
@@ -21,10 +21,10 @@ public class TipsBoard extends JSprite {
         Point pos = this.drawPosition;
         Point size = this.imageSize;
         return new Rect(
-                (int) (pos.x + size.x * 0.2583),
-                (int) (pos.y + size.y * 0.7603),
-                (int) (pos.x + size.x * 0.7583),
-                (int) (pos.y + size.y * 0.926));
+                (int) (pos.x + size.x * 0.1625),
+                (int) (pos.y + size.y * 0.4937),
+                (int) (pos.x + size.x * 0.625),
+                (int) (pos.y + size.y * 0.9625));
     }
 
 }

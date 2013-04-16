@@ -31,10 +31,10 @@ public abstract class CommonView extends SurfaceView implements SurfaceHolder.Ca
         this.mainPaint = new Paint();
         this.mainPaint.setAntiAlias(true);
         Typeface typeFace = Typeface.createFromAsset(mainActivity.getAssets(),
-                "fonts/Kristen.ttf");
+                "fonts/ErasBoldITC.ttf");
         this.mainPaint.setTypeface(typeFace);
         this.mainPaint.setTextSize((float)
-                (30 * (SuwakoJumpActivity.DISPLAY_WIDTH / 480.0)));
+                (27 * (SuwakoJumpActivity.DISPLAY_WIDTH / 480.0)));
 
         this.initBitmap();
         this.initSprite();
