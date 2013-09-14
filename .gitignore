@@ -3,3 +3,7 @@ out/
 work/
 *.iml
 *.apk
+keystore
+bin
+apk
+/keystore
